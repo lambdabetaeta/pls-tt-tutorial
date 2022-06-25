@@ -1,0 +1,380 @@
+\documentclass[handout]{beamer} % use [handout] option to stop pauses
+\beamertemplatenavigationsymbolsempty 
+
+\usepackage[utf8]{inputenc}
+\definecolor{BristolURed}{HTML}{B01C2E} % UBC Blue (primary)
+
+\usecolortheme[named=BristolURed]{structure}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{libertine}
+\usepackage{xparse}
+\usepackage{mathpartir}
+\usepackage{fancybox}
+\usepackage{jmsdelim}
+\usepackage{macros}
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center,shadow=true]{title}
+		\usebeamerfont{title}
+		\scshape
+		\uppercase\expandafter{\romannumeral\insertsectionnumber\relax}.~\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+\newcommand\doubleplus{+\kern-1.3ex+\kern0.8ex}
+
+\title{Type Theory and Homotopy \\ I. Constructions and dependence}
+\author{
+		Alex Kavvos % \inst{1} % \orcidID{0000-0001-7953-7975}
+}
+
+\institute{
+		% \inst{1}
+    University of Bristol
+		% \email{alex.kavvos@bristol.ac.uk}
+}
+\date{Panhellenic Logic Symposium, 6--10 July 2022}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+\section{Intuitionism and Constructions}
+
+\begin{frame}
+  \frametitle{Intuitionism, Constructivism, and Type Theory}
+  
+  Some general talk.
+  
+\end{frame}
+
+\begin{frame}
+\frametitle{Constructions}
+
+Let $A, B, \dots$ be sets.
+\begin{align*}
+  \mathbf{0} &\defeq \emptyset &
+  \mathbf{1} &\defeq \{ \ast \}  \\
+  A \times B &\defeq \{ (a, b) \mid a \in A \text{ and } b \in B \} &
+  A \to B &\defeq \{ f \mid f : A \to B \}
+\end{align*}
+\[
+  A + B \defeq \{ (1, a) \mid a \in A \} \cup \{ (2, y) \mid b \in B \}
+\]
+Let $\lnot A \defeq A \to \mathbf{0}$.
+
+\begin{example}
+  \small
+  \begin{itemize}
+    \item $(x, y) \mapsto x \in (A \times B) \to A$
+    \item $x \mapsto (y \mapsto (x, y)) \in A \to (B \to A \times B)$
+    \item $\lambda x.\, \lambda y.\, (x, y) \in A \to (B \to A \times B)$
+    \item $\lambda (x, v). \begin{cases}
+        (1, (x, a)) & \text{ if } v = (1, a) \\
+        (2, (x, b)) & \text{ if } v = (2, b) \\
+    \end{cases}
+    \in A \times (B + C) \to (A \times B) + (A \times C)$
+    \item $\lambda a.\, \lambda f.\, f(a) \in A \to \lnot\lnot A$
+  \end{itemize}
+\end{example}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Dependence}
+  Let $(B_a)_{a \in A}$ be a \textbf{family} of sets.
+
+  \begin{align*}
+    \Prod{a}{A}{B} &\defeq \sum_{a \in A} B_a \defeq
+      \left\{ (a, b) \mid a \in A \text{ and } b \in B_a \right\}  \\
+    \Fn{a}{A}{B} &\defeq \prod_{a \in A} B_a \defeq
+      \left\{ f : A \to \bigcup_{a \in A} B_a \mid f(a) \in B_a \text{ for all } a \in A \right\}  \\
+  \end{align*}
+
+  Given a \textbf{constant} family of sets $(B)_{a \in A}$ we have
+  \begin{align*}
+    \Prod{a}{A}{B} &= A \times B &
+    \Fn{a}{A}{B} &= A \to B
+  \end{align*}
+  
+  \begin{example}
+    Let $P_n \defeq \begin{cases}
+      \{ \ast \} & \text{ if } $n$ \text{ is prime} \\
+      \emptyset & \text{ otherwise }
+    \end{cases}$
+    \begin{itemize}
+      \item $(11, *) \in \Prod{n}{\mathbb{N}}{P_n}$, but 
+      $(4, *) \not\in \Prod{n}{\mathbb{N}}{P_n}$ \\
+      \item $\lambda n.\, \textsf{if } n \text{ is prime} \textsf{ then } (1, *) \textsf{ else } (2, \textsf{id}_{\emptyset}) \in \Fn{n}{\mathbb{N}}{P_n + \lnot P_n}$
+    \end{itemize}
+  \end{example}
+\end{frame}
+
+
+
+\section{Martin-L\"of Type Theory}
+
+\begin{frame}
+  \frametitle{Judgements}
+  
+  Martin-L\"of Type Theory (MLTT) is a \textbf{natural deduction} system.
+
+  It has six distinct kinds of \textbf{judgement}:
+  \begin{center}
+    \begin{tabular}{ll}
+      $\IsCtx{\Gamma}$    & $\Gamma$ is a context \\
+      $\IsTy{A}[]$        & $A$ is a type in context $\Gamma$ \\
+      $\IsTm{M}{A}$       & $M$ is a term of type $A$ in context $\Gamma$ \\
+      & \\
+      $\EqCtx{\Gamma}{\Delta}$  & $\Gamma$ and $\Delta$ are equal contexts \\
+      $\EqTy{A}{B}[]$             & $A$ and $B$ are equal types in context $\Gamma$ \\
+      $\EqTm{M}{N}{A}$          & $M$ and $N$ are equal terms of type $A$ in context $\Gamma$
+    \end{tabular}
+  \end{center}
+  These are generated \textbf{inductive-inductively}.
+
+  The equality judgements have rules that make them
+  \begin{itemize}
+    \item equivalence relations, e.g. $
+        \inferrule{
+          \EqTy{A}{B}[]
+        }{
+          \EqTy{B}{A}[]
+        }
+    $
+    \item congruences 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What is a type?}
+  
+  \begin{block}{Ingredients of a type}
+    \begin{itemize}
+      \item a \textbf{formation} rule (when can I form this type?)
+      \item an \textbf{introduction} rule (how do I make elem's of this type?)
+      \item an \textbf{elimination} rule (how do I use elem's of this type?)
+      \item a \textbf{computation} rule (how do I calculate with its elements?)
+      \item a \textbf{uniqueness} rule
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Dependent product types / $\Pi$ types}
+  
+  \begin{center}
+      \renewcommand{\arraystretch}{2.5}
+    \begin{tabular}{p{2cm}c}
+      formation &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[]
+        }{
+          \IsTy{\Fn{x}{A}{B}}[]
+        }
+      $ \\
+      introduction &
+      $
+        \inferrule{
+          \IsTm[\Gamma, x : A]{M}{B}
+        }{
+          \IsTm{\Lam{x}{M}}{\Fn{x}{A}{B}}
+        }
+      $ \\
+      elimination &
+      $
+        \inferrule{
+          \IsTm{M}{\Fn{x}{A}{B}} \\
+          \IsTm{N}{A}
+        }{
+          \IsTm{\App{M}{N}}{\Sb{B}{N}{x}}
+        }
+      $ \\
+      computation &
+      $
+        \inferrule{
+          \IsTm[\Gamma, x : A]{M}{B} \\
+          \IsTm{N}{A}
+        }{
+          \EqTm{\App*{\Lam{x}{M}}{N}}{\Sb{M}{N}{x}}{\Sb{B}{N}{x}}
+        }
+      $ \\
+      uniqueness &
+      $
+        \inferrule{
+          \IsTm{M}{\Fn{x}{A}{B}}
+        }{
+          \EqTm{M}{\Lam{x}{\App{M}{x}}}{\Fn{x}{A}{B}}
+        }
+      $
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Dependent sum types / $\Sigma$ types}
+  
+  \begin{center}
+      \renewcommand{\arraystretch}{2.5}
+    \begin{tabular}{p{2cm}c}
+      formation &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[]
+        }{
+          \IsTy{\Prod{x}{A}{B}}[]
+        }
+      $ \\
+      introduction &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[] \\
+          \IsTm{M}{A} \\
+          \IsTm{N}{\Sb{B}{M}{x}}
+        }{
+          \IsTm{\Pair{M}{N}}{\Prod{x}{A}{B}}
+        }
+      $ \\
+      elimination &
+      $
+        \inferrule{
+          \IsTm{M}{\Prod{x}{A}{B}} \\
+        }{
+          \IsTm{\Proj[1]{M}}{A}
+        }
+      $ 
+      $
+        \inferrule{
+          \IsTm{M}{\Prod{x}{A}{B}} \\
+        }{
+          \IsTm{\Proj[2]{M}}{\Sb{B}{\Proj[1]{M}}{x}}
+        }
+      $ 
+      \\
+      computation &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[] \\
+          \IsTm{M}{A} \\
+          \IsTm{N}{\Sb{B}{M}{x}}
+        }{
+          \EqTm{\Proj[1]{\Pair{M}{N}}}{M}{A}
+        }
+      $ \\
+      &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[] \\
+          \IsTm{M}{A} \\
+          \IsTm{N}{\Sb{B}{M}{x}}
+        }{
+          \EqTm{\Proj[2]{\Pair{M}{N}}}{N}{\Sb{B}{\Proj[1]{M}}{x}}
+        }
+      $
+      \\
+      uniqueness &
+      $
+        \inferrule{
+          \IsTm{M}{\Prod{x}{A}{B}}
+        }{
+          \EqTm{M}{\Pair{\Proj[1]{M}}{\Proj[2]{M}}}{\Prod{x}{A}{B}}
+        }
+      $
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Natural numbers}
+  
+  \begin{center}
+      \renewcommand{\arraystretch}{2.5}
+    \begin{tabular}{p{2cm}c}
+      formation &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[]
+        }{
+          \IsTy{\Prod{x}{A}{B}}[]
+        }
+      $ \\
+      introduction &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[] \\
+          \IsTm{M}{A} \\
+          \IsTm{N}{\Sb{B}{M}{x}}
+        }{
+          \IsTm{\Pair{M}{N}}{\Prod{x}{A}{B}}
+        }
+      $ \\
+      elimination &
+      $
+        \inferrule{
+          \IsTm{M}{\Prod{x}{A}{B}} \\
+        }{
+          \IsTm{\Proj[1]{M}}{A}
+        }
+      $ 
+      $
+        \inferrule{
+          \IsTm{M}{\Prod{x}{A}{B}} \\
+        }{
+          \IsTm{\Proj[2]{M}}{\Sb{B}{\Proj[1]{M}}{x}}
+        }
+      $ 
+      \\
+      computation &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[] \\
+          \IsTm{M}{A} \\
+          \IsTm{N}{\Sb{B}{M}{x}}
+        }{
+          \EqTm{\Proj[1]{\Pair{M}{N}}}{M}{A}
+        }
+      $ \\
+      &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A]{B}[] \\
+          \IsTm{M}{A} \\
+          \IsTm{N}{\Sb{B}{M}{x}}
+        }{
+          \EqTm{\Proj[2]{\Pair{M}{N}}}{N}{\Sb{B}{\Proj[1]{M}}{x}}
+        }
+      $
+      \\
+      uniqueness &
+      $
+        \inferrule{
+          \IsTm{M}{\Prod{x}{A}{B}}
+        }{
+          \EqTm{M}{\Pair{\Proj[1]{M}}{\Proj[2]{M}}}{\Prod{x}{A}{B}}
+        }
+      $
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+
+\section{Examples}
+
+
+
+\section{Universes}
+
+
+\end{document}
