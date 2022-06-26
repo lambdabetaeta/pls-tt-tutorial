@@ -1,4 +1,5 @@
 \NewDocumentCommand{\defeq}{}{\stackrel{\mathclap{\mbox{\tiny def}}}{=}}
+\NewDocumentCommand{\deq}{}{\mathbin{{\color{black}{\equiv}}}}
 
 \definecolor{Matterhorn}{RGB}{70,45,68}
 \definecolor{Cowboy}{RGB}{86,47,50}
@@ -129,13 +130,19 @@
 %% Coproducts
 \NewDocumentCommand{\Inl}{m}{\mathsf{inl}(#1)}
 \NewDocumentCommand{\Inr}{m}{\mathsf{inr}(#1)}
-\NewDocumentCommand{\Case}{mmmmmm}{\mathsf{case}_{[#1]}(#2; #3.\, #4; #5.\, #6)}
+\NewDocumentCommand{\Case}{ommmmm}{
+  \mathsf{case}
+    \IfNoValueTF{#1}{}{_{[#1]}}
+  (#2; #3.\, #4; #5.\, #6)
+}
 %% Natural numbers
 \NewDocumentCommand{\Nat}{}{\mathsf{Nat}}
 \NewDocumentCommand{\Zero}{}{\mathsf{zero}}
 \NewDocumentCommand{\Succ}{m}{\mathsf{succ}(#1)}
-\NewDocumentCommand{\NatRec}{mmmmmm}{
-  \mathsf{rec}\IfValueTF{#1}{_{[#1]}}{}(#2; #3; #4, #5.\, #6)
+\NewDocumentCommand{\NatRec}{ommmmm}{
+  \mathsf{rec}
+    \IfNoValueTF{#1}{}{_{[#1]}}
+  (#2; #3; #4, #5.\, #6)
 }
 %% Identity types
 \NewDocumentCommand{\Refl}{m}{\mathsf{refl}(#1)}

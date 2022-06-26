@@ -14,8 +14,8 @@
 \usepackage{xparse}
 \usepackage{mathpartir}
 \usepackage{fancybox}
-\usepackage{jmsdelim}
-\usepackage{macros}
+\usepackage{../jmsdelim}
+\usepackage{../macros}
 
 \AtBeginSection[]{
   \begin{frame}
@@ -419,7 +419,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \IsTm[\Gamma, x : A]{P}{\Sb{C}{\Inl{x}}{c}} \\
           \IsTm[\Gamma, y : B]{Q}{\Sb{C}{\Inr{y}}{c}}
         }{
-          \IsTm{\Case{c. C}{M}{x}{P}{y}{Q}}{\Sb{C}{M}{c}}
+          \IsTm{\Case[c. C]{M}{x}{P}{y}{Q}}{\Sb{C}{M}{c}}
         }
       $ \\[2ex]
       comp. &
@@ -431,7 +431,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \IsTm[\Gamma, y : B]{Q}{\Sb{C}{\Inr{y}}{c}} \\
           \IsTm{E}{A}
         }{
-          \EqTm{\Case{c. C}{\Inl{E}}{x}{P}{y}{Q}}{\Sb{P}{E}{x}}{\Sb{C}{\Inl{E}}{c}}
+          \EqTm{\Case[c. C]{\Inl{E}}{x}{P}{y}{Q}}{\Sb{P}{E}{x}}{\Sb{C}{\Inl{E}}{c}}
         }
       $
     \end{tabular}
@@ -478,7 +478,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \IsTm{P}{\Sb{C}{\Zero}{n}} \\
           \IsTm[\Gamma, n : \Nat, c : C]{Q}{\Sb{C}{\Succ{n}}{n}} \\
         }{
-          \IsTm{\NatRec{c. C}{N}{P}{n}{c}{Q}}{\Sb{C}{N}{n}}
+          \IsTm{\NatRec[c. C]{N}{P}{n}{c}{Q}}{\Sb{C}{N}{n}}
         }
       $
        \\
@@ -487,7 +487,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
         \inferrule{
           \ldots
         }{
-          \EqTm{\NatRec{c. C}{\Zero}{P}{n}{c}{Q}}{P}{\Sb{C}{\Zero}{n}}
+          \EqTm{\NatRec[c. C]{\Zero}{P}{n}{c}{Q}}{P}{\Sb{C}{\Zero}{n}}
         }
       $
     \end{tabular}
@@ -495,16 +495,47 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
         \inferrule{
           \ldots
         }{
-          \EqTm{\NatRec{c. C}{\Succ{x}}{P}{n}{c}{Q}}{
-            \Sb{Q}{x, \NatRec{c. C}{x}{P}{n}{c}{Q}}{n, c}
+          \EqTm{\NatRec[c. C]{\Succ{x}}{P}{n}{c}{Q}}{
+            \Sb{Q}{x, \NatRec{x}{P}{n}{c}{Q}}{n, c}
           }{\Sb{C}{\Succ{x}}{n}}
         }
       \]
   \end{center}
 \end{frame}
 
+
 \begin{frame}
-  \frametitle{Metatheory}
+  \frametitle{Metatheory (I)}
+  Let $\mathcal{J}$ stand for either $A \textsf{ type}$ or $\Tm{M} : A$.
+
+  \begin{theorem}[Weakening]
+    The following rule is admissible:
+    \[
+      \inferrule{
+        \Gamma, \Delta \vdash \mathcal{J} \\
+        \IsTy{A}
+      }{
+        \Gamma, x : A, \Delta \vdash \mathcal{J}
+      }
+    \]
+  \end{theorem}
+
+  \begin{theorem}[Substitution / Cut]
+    The following rule is admissible:
+    \[
+      \inferrule{
+        \IsTm{M}{A} \\
+        \Gamma, x : A, \Delta \vdash \mathcal{J}
+      }{
+        \Gamma, \Sb{\Delta}{M}{x} \vdash \Sb{\mathcal{J}}{M}{x}
+      }
+    \]
+  \end{theorem}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Metatheory (II)}
   
   \begin{theorem}[Decidability of type checking]
     Given $\Gamma$, $\Tm{M}$, and $A$, it is decidable whether $\IsTm{M}{A}$.
@@ -530,6 +561,82 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
 
 
 \section{Examples}
+
+\begin{frame}
+  \frametitle{Propositional constructions}
+  
+  \begin{center}
+    \shadowbox{
+      Types are propositions. Terms are proofs.
+    }
+  \end{center}
+  Define:
+  \begin{align*}
+    \land &\defeq \times
+    &
+    \lor &\defeq +
+  \end{align*}
+  
+  \medskip
+  
+  Given $\IsTy[]{A, B}[]$ we have
+  
+  \begin{itemize}
+    \item $\IsTm[]{\Lam{x}{\Lam{y}{x}}}{A \to B \to A}$
+    \item $\IsTm[]{\Lam{x}{\Lam{y}{\Pair{x}{y}}}}{A \to B \to A \land B}$
+    \item $\IsTm[]{\Lam{p}{\Pair{\Proj[2]{p}}{\Proj[1]{p}}}}{A \land B \to B \land A}$
+    \item $\IsTm[]{\Lam{u}{\Case{u}{x}{\Inr{x}}{y}{\Inl{y}}}}{A \lor B \to B \lor A}$
+  \end{itemize}
+  
+  \begin{theorem}
+    All intuitionistically valid formulas/types are inhabited.
+  \end{theorem}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Addition}
+  
+  Let $\Gamma \defeq x : \Nat, y : \Nat$.
+  \begin{mathpar}
+    \small
+    \inferrule*{
+      \inferrule{ }{\IsTm{x}{\Nat}} \\
+      \inferrule{ }{\IsTm{y}{\Nat}} \\
+      \inferrule{
+        \inferrule{ }{\IsTm[\Gamma, n : \Nat, c : \Nat]{n}{\Nat}}
+      }{
+        \IsTm[\Gamma, n : \Nat, c : \Nat]{\Succ{n}}{\Nat}
+      }
+    }{
+      \IsTm{
+        \NatRec[\_. \Nat]{x}{y}{n}{c}{\Succ{c}}
+      }{\Nat}
+    }
+  \end{mathpar}
+  
+  So we can define
+  \[
+    \IsTm[]{\textsf{add}\ {\color{black}{=}}\
+      \Lam{x}{\Lam{y}{
+        \NatRec{x}{y}{n}{c}{\Succ{n}}
+      }}}{\Nat \to \Nat \to \Nat}
+  \]
+  and compute
+  \begin{align*}
+    &\IsTm[y : \Nat]{
+      \App{\App{\textsf{add}}{\Zero}}{y}
+        \deq
+      y
+    }{\Nat}
+    \\
+    &\IsTm[y : \Nat]{
+      \App{\App{\textsf{add}}{\Zero}}{y}
+        \deq
+      \Succ{y}
+    }{\Nat}
+  \end{align*}
+  and so on.
+\end{frame}
 
 \begin{frame}
   \frametitle{A familiar construction (I)}
