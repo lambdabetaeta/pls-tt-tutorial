@@ -96,15 +96,15 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
   Let $(B_a)_{a \in A}$ be a \textbf{family} of sets.
 
   \begin{align*}
-    \Prod{a}{A}{B} &\defeq \sum_{a \in A} B_a \defeq
+    \DSum{a}{A}{B_a} &\defeq \sum_{a \in A} B_a \defeq
       \left\{ (a, b) \mid a \in A \text{ and } b \in B_a \right\}  \\
-    \Fn{a}{A}{B} &\defeq \prod_{a \in A} B_a \defeq
+    \Fn{a}{A}{B_a} &\defeq \prod_{a \in A} B_a \defeq
       \left\{ f : A \to \bigcup_{a \in A} B_a \mid f(a) \in B_a \text{ for all } a \in A \right\}  \\
   \end{align*}
 
   Given a \textbf{constant} family of sets $(B)_{a \in A}$ we have
   \begin{align*}
-    \Prod{a}{A}{B} &= A \times B &
+    \DSum{a}{A}{B} &= A \times B &
     \Fn{a}{A}{B} &= A \to B
   \end{align*}
   
@@ -114,8 +114,8 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
       \emptyset & \text{ otherwise }
     \end{cases}$
     \begin{itemize}
-      \item $(11, *) \in \Prod{n}{\mathbb{N}}{P_n}$, but 
-      $(4, *) \not\in \Prod{n}{\mathbb{N}}{P_n}$ \\
+      \item $(11, *) \in \DSum{n}{\mathbb{N}}{P_n}$, but 
+      $(4, *) \not\in \DSum{n}{\mathbb{N}}{P_n}$ \\
       \item $\lambda n.\, \textsf{if } n \text{ is prime} \textsf{ then } (1, *) \textsf{ else } (2, \textsf{id}_{\emptyset}) \in \Fn{n}{\mathbb{N}}{P_n + \lnot P_n}$
     \end{itemize}
   \end{example}
@@ -126,11 +126,30 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
 \section{Martin-L\"of Type Theory}
 
 \begin{frame}
+  \frametitle{Martin-L\"of Type Theory (MLTT)}
+
+  \begin{itemize}
+    \item Invented in the late 1960s to formalise constructive maths.
+    \item A formal theory in \textbf{natural deduction} style.
+    \item Every term in the theory needs to have a \textbf{type}.
+    \item There are \textbf{no propositions}, only types.
+  \end{itemize}
+  
+  \begin{center}
+    \shadowbox{
+      \begin{minipage}{0.30\textwidth}
+        \centering
+        propositions = types\\
+        terms = proofs
+      \end{minipage}
+    }
+  \end{center}
+\end{frame}
+
+\begin{frame}
   \frametitle{Judgements}
   
-  Martin-L\"of Type Theory (MLTT) is a \textbf{natural deduction} system.
-
-  It has six distinct kinds of \textbf{judgement}:
+  Six distinct kinds of \textbf{judgement}:
   \begin{center}
     \begin{tabular}{ll}
       $\IsCtx{\Gamma}$    & $\Gamma$ is a context \\
@@ -142,8 +161,6 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
       $\EqTm{M}{N}{A}$          & $M$ and $N$ are equal terms of type $A$ in context $\Gamma$
     \end{tabular}
   \end{center}
-  These are generated \textbf{inductive-inductively}.
-
   The equality judgements have rules that make them
   \begin{itemize}
     \item equivalence relations, e.g. $
@@ -153,26 +170,76 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \EqTy{B}{A}[]
         }
     $
-    \item congruences 
+    \item congruences, e.g. \[
+      \inferrule{
+        \EqTy{A_1}{A_2}[] \\
+        \EqTy[\Gamma, x : A_1]{B_1}{B_2}[]
+      }{
+        \EqTy{\Fn{x}{A_1}{B_1}}{\Fn{x}{A_2}{B_2}}[]
+      }
+    \]
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Contexts and variables}
+  A \textbf{context} is a list of variables and their types.
+  \begin{mathpar}
+    \inferrule{ }{
+      \IsCtx{\Emp}
+    }
+    \and
+    \inferrule{
+      \IsCtx{\Gamma} \\
+      \IsTy{A}[]
+    }{
+      \IsCtx{\ECx{\Gamma}{x}{A}}
+    }
+  \end{mathpar}
+  
+  \medskip
+
+  \textbf{Variables} stand for terms.
+
+  If I have a variable I can use it as a term:
+  \[
+    \inferrule{
+      \IsCtx{\Gamma, x : A, \Delta}
+    }{
+      \IsTm[\Gamma, x : A, \Delta]{x}{A}
+    }
+  \]
+
 \end{frame}
 
 \begin{frame}
   \frametitle{What is a type?}
   
+  It is a classifier of terms.
+
+  \medskip
+  
+  Terms of a certain type have an \textbf{interface}: a specification of how
+  they can be created and consumed.
+  
+  \medskip
+  
   \begin{block}{Ingredients of a type}
     \begin{itemize}
       \item a \textbf{formation} rule (when can I form this type?)
-      \item an \textbf{introduction} rule (how do I make elem's of this type?)
-      \item an \textbf{elimination} rule (how do I use elem's of this type?)
+      \item an \textbf{introduction} rule (how do I make terms of this type?)
+      \item an \textbf{elimination} rule (how do I use terms of this type?)
       \item a \textbf{computation} rule (how do I calculate with its elements?)
-      \item a \textbf{uniqueness} rule
+      \item a \textbf{uniqueness} rule (what do terms of this type look like?)
     \end{itemize}
   \end{block}
+  Sometimes computation rules are called \textbf{$\beta$ rules}
+  
+  and uniqueness rules \textbf{$\eta$ rules}.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Dependent product types / $\Pi$ types}
+  \frametitle{Dependent function types / $\Pi$ types}
   
   \begin{center}
       \renewcommand{\arraystretch}{2.5}
@@ -226,78 +293,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
 \begin{frame}
   \frametitle{Dependent sum types / $\Sigma$ types}
   
-  \begin{center}
-      \renewcommand{\arraystretch}{2.5}
-    \begin{tabular}{p{2cm}c}
-      formation &
-      $
-        \inferrule{
-          \IsTy[\Gamma, x : A]{B}[]
-        }{
-          \IsTy{\Prod{x}{A}{B}}[]
-        }
-      $ \\
-      introduction &
-      $
-        \inferrule{
-          \IsTy[\Gamma, x : A]{B}[] \\
-          \IsTm{M}{A} \\
-          \IsTm{N}{\Sb{B}{M}{x}}
-        }{
-          \IsTm{\Pair{M}{N}}{\Prod{x}{A}{B}}
-        }
-      $ \\
-      elimination &
-      $
-        \inferrule{
-          \IsTm{M}{\Prod{x}{A}{B}} \\
-        }{
-          \IsTm{\Proj[1]{M}}{A}
-        }
-      $ 
-      $
-        \inferrule{
-          \IsTm{M}{\Prod{x}{A}{B}} \\
-        }{
-          \IsTm{\Proj[2]{M}}{\Sb{B}{\Proj[1]{M}}{x}}
-        }
-      $ 
-      \\
-      computation &
-      $
-        \inferrule{
-          \IsTy[\Gamma, x : A]{B}[] \\
-          \IsTm{M}{A} \\
-          \IsTm{N}{\Sb{B}{M}{x}}
-        }{
-          \EqTm{\Proj[1]{\Pair{M}{N}}}{M}{A}
-        }
-      $ \\
-      &
-      $
-        \inferrule{
-          \IsTy[\Gamma, x : A]{B}[] \\
-          \IsTm{M}{A} \\
-          \IsTm{N}{\Sb{B}{M}{x}}
-        }{
-          \EqTm{\Proj[2]{\Pair{M}{N}}}{N}{\Sb{B}{\Proj[1]{M}}{x}}
-        }
-      $
-      \\
-      uniqueness &
-      $
-        \inferrule{
-          \IsTm{M}{\Prod{x}{A}{B}}
-        }{
-          \EqTm{M}{\Pair{\Proj[1]{M}}{\Proj[2]{M}}}{\Prod{x}{A}{B}}
-        }
-      $
-    \end{tabular}
-  \end{center}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Natural numbers}
+  \small
   
   \begin{center}
       \renewcommand{\arraystretch}{2.5}
@@ -307,7 +303,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
         \inferrule{
           \IsTy[\Gamma, x : A]{B}[]
         }{
-          \IsTy{\Prod{x}{A}{B}}[]
+          \IsTy{\DSum{x}{A}{B}}[]
         }
       $ \\
       introduction &
@@ -317,20 +313,20 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \IsTm{M}{A} \\
           \IsTm{N}{\Sb{B}{M}{x}}
         }{
-          \IsTm{\Pair{M}{N}}{\Prod{x}{A}{B}}
+          \IsTm{\Pair{M}{N}}{\DSum{x}{A}{B}}
         }
       $ \\
       elimination &
       $
         \inferrule{
-          \IsTm{M}{\Prod{x}{A}{B}} \\
+          \IsTm{M}{\DSum{x}{A}{B}} \\
         }{
           \IsTm{\Proj[1]{M}}{A}
         }
       $ 
       $
         \inferrule{
-          \IsTm{M}{\Prod{x}{A}{B}} \\
+          \IsTm{M}{\DSum{x}{A}{B}} \\
         }{
           \IsTm{\Proj[2]{M}}{\Sb{B}{\Proj[1]{M}}{x}}
         }
@@ -360,12 +356,136 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
       uniqueness &
       $
         \inferrule{
-          \IsTm{M}{\Prod{x}{A}{B}}
+          \IsTm{M}{\DSum{x}{A}{B}}
         }{
-          \EqTm{M}{\Pair{\Proj[1]{M}}{\Proj[2]{M}}}{\Prod{x}{A}{B}}
+          \EqTm{M}{\Pair{\Proj[1]{M}}{\Proj[2]{M}}}{\DSum{x}{A}{B}}
         }
       $
     \end{tabular}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Coproducts (disjoint unions)}
+
+  \begin{center}
+      \renewcommand{\arraystretch}{2.5}
+    \begin{tabular}{p{1cm}c}
+      form. &
+      $
+        \inferrule{
+          \IsTy{A}[] \\
+          \IsTy{B}[]
+        }{
+          \IsTy{A + B}[]
+        }
+      $ \\
+      intro. &
+      $
+        \inferrule{
+          \IsTm{M}{A} \\
+        }{
+          \IsTm{\Inl{M}}{A + B}
+        }
+      $ 
+      $
+        \inferrule{
+          \IsTm{N}{B} \\
+        }{
+          \IsTm{\Inr{N}}{A + B}
+        }
+      $ 
+      \\[2ex]
+      elim. &
+      $
+        \inferrule{
+          \IsTm{M}{A + B} \\
+          \IsTy[\Gamma, c : A + B]{C}[] \\
+          \IsTm[\Gamma, x : A]{P}{\Sb{C}{\Inl{x}}{c}} \\
+          \IsTm[\Gamma, y : B]{Q}{\Sb{C}{\Inr{y}}{c}}
+        }{
+          \IsTm{\Case{c. C}{M}{x}{P}{y}{Q}}{\Sb{C}{M}{c}}
+        }
+      $ \\[2ex]
+      comp. &
+      $
+        \inferrule{
+          \IsTm{M}{A + B} \\
+          \IsTy[\Gamma, c : A + B]{C}[] \\
+          \IsTm[\Gamma, x : A]{P}{\Sb{C}{\Inl{x}}{c}} \\
+          \IsTm[\Gamma, y : B]{Q}{\Sb{C}{\Inr{y}}{c}} \\
+          \IsTm{E}{A}
+        }{
+          \EqTm{\Case{c. C}{\Inl{E}}{x}{P}{y}{Q}}{\Sb{P}{E}{x}}{\Sb{C}{\Inl{E}}{c}}
+        }
+      $
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Natural numbers}
+  
+  \small
+  
+  \begin{center}
+    \renewcommand{\arraystretch}{2.5}
+    \begin{tabular}{p{1.5cm}c}
+      form. &
+      $
+        \inferrule{
+          %
+        }{
+          \IsTy{\Nat}[]
+        }
+      $ \\
+      intro. &
+      $
+        \inferrule{
+          %
+        }{
+          \IsTm{\Zero}{\Nat}
+        }
+      $
+      $
+        \inferrule{
+          \IsTm{N}{\Nat}
+        }{
+          \IsTm{\Succ{N}}{\Nat}
+        }
+      $
+      \\[3ex]
+      elim. &
+      $
+        \inferrule{
+          \IsTm{N}{\Nat} \\
+          \IsTy[\Gamma, n : \Nat]{C}[] \\
+          \IsTm{P}{\Sb{C}{\Zero}{n}} \\
+          \IsTm[\Gamma, n : \Nat, c : C]{Q}{\Sb{C}{\Succ{n}}{n}} \\
+        }{
+          \IsTm{\NatRec{c : C}{N}{P}{n}{c}{Q}}{\Sb{C}{N}{n}}
+        }
+      $
+       \\
+      comp. &
+      $
+        \inferrule{
+          \ldots
+        }{
+          \EqTm{\NatRec{c : C}{\Zero}{P}{n}{c}{Q}}{P}{\Sb{C}{\Zero}{n}}
+        }
+      $
+    \end{tabular}
+      \[
+        \inferrule{
+          \ldots
+        }{
+          \EqTm{\NatRec{c. C}{\Succ{x}}{P}{n}{c}{Q}}{
+            \Sb{Q}{x, \NatRec{c. C}{x}{P}{n}{c}{Q}}{n, c}
+          }{\Sb{C}{\Succ{x}}{n}}
+        }
+      \]
   \end{center}
 \end{frame}
 
