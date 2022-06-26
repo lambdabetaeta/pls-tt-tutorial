@@ -121,7 +121,11 @@
 %% Dependent product
 \NewDocumentCommand{\Fn}{mmm}{(\DeclVar{#1}{#2}) \to #3}
 \NewDocumentCommand{\App}{smm}{\IfBooleanTF{#1}{\parens{#2}}{#2}\parens{#3}}
-\NewDocumentCommand{\Lam}{mO{A}m}{\lambda \DeclVar{#1}{#2}.\, #3}
+\NewDocumentCommand{\Lam}{mom}{
+  \lambda 
+    \IfNoValueTF{#2}{#1}{\DeclVar{#1}{#2}}
+  .\, #3
+}
 %% Coproducts
 \NewDocumentCommand{\Inl}{m}{\mathsf{inl}(#1)}
 \NewDocumentCommand{\Inr}{m}{\mathsf{inr}(#1)}

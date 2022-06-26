@@ -156,9 +156,9 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
       $\IsTy{A}[]$        & $A$ is a type in context $\Gamma$ \\
       $\IsTm{M}{A}$       & $M$ is a term of type $A$ in context $\Gamma$ \\
       & \\
-      $\EqCtx{\Gamma}{\Delta}$  & $\Gamma$ and $\Delta$ are equal contexts \\
-      $\EqTy{A}{B}[]$             & $A$ and $B$ are equal types in context $\Gamma$ \\
-      $\EqTm{M}{N}{A}$          & $M$ and $N$ are equal terms of type $A$ in context $\Gamma$
+      $\EqCtx{\Gamma}{\Delta}$  & $\Gamma$ and $\Delta$ are \textbf{definitionally} equal contexts \\
+      $\EqTy{A}{B}[]$             & $A$ and $B$ are \textbf{definitionally} equal types \\
+      $\EqTm{M}{N}{A}$          & $M$ and $N$ are \textbf{definitionally} equal terms
     \end{tabular}
   \end{center}
   The equality judgements have rules that make them
@@ -182,7 +182,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Contexts and variables}
+  \frametitle{Contexts, variables, conversion}
   A \textbf{context} is a list of variables and their types.
   \begin{mathpar}
     \inferrule{ }{
@@ -207,6 +207,20 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
       \IsCtx{\Gamma, x : A, \Delta}
     }{
       \IsTm[\Gamma, x : A, \Delta]{x}{A}
+    }
+  \]
+  
+  \medskip
+  
+  We can always replace definitionally equals by equals. 
+
+  The \textbf{type conversion} rule:
+  \[
+    \inferrule{
+      \IsTm{M}{A} \\
+      \EqTy{A}{B}[]
+    }{
+      \IsTm{M}{B}
     }
   \]
 
@@ -257,7 +271,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
         \inferrule{
           \IsTm[\Gamma, x : A]{M}{B}
         }{
-          \IsTm{\Lam{x}{M}}{\Fn{x}{A}{B}}
+          \IsTm{\Lam{x}[A]{M}}{\Fn{x}{A}{B}}
         }
       $ \\
       elimination &
@@ -275,7 +289,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \IsTm[\Gamma, x : A]{M}{B} \\
           \IsTm{N}{A}
         }{
-          \EqTm{\App*{\Lam{x}{M}}{N}}{\Sb{M}{N}{x}}{\Sb{B}{N}{x}}
+          \EqTm{\App*{\Lam{x}[A]{M}}{N}}{\Sb{M}{N}{x}}{\Sb{B}{N}{x}}
         }
       $ \\
       uniqueness &
@@ -283,7 +297,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
         \inferrule{
           \IsTm{M}{\Fn{x}{A}{B}}
         }{
-          \EqTm{M}{\Lam{x}{\App{M}{x}}}{\Fn{x}{A}{B}}
+          \EqTm{M}{\Lam{x}[A]{\App{M}{x}}}{\Fn{x}{A}{B}}
         }
       $
     \end{tabular}
@@ -349,7 +363,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \IsTm{M}{A} \\
           \IsTm{N}{\Sb{B}{M}{x}}
         }{
-          \EqTm{\Proj[2]{\Pair{M}{N}}}{N}{\Sb{B}{\Proj[1]{M}}{x}}
+          \EqTm{\Proj[2]{\Pair{M}{N}}}{N}{\Sb{B}{M}{x}}
         }
       $
       \\
@@ -464,7 +478,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
           \IsTm{P}{\Sb{C}{\Zero}{n}} \\
           \IsTm[\Gamma, n : \Nat, c : C]{Q}{\Sb{C}{\Succ{n}}{n}} \\
         }{
-          \IsTm{\NatRec{c : C}{N}{P}{n}{c}{Q}}{\Sb{C}{N}{n}}
+          \IsTm{\NatRec{c. C}{N}{P}{n}{c}{Q}}{\Sb{C}{N}{n}}
         }
       $
        \\
@@ -473,7 +487,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
         \inferrule{
           \ldots
         }{
-          \EqTm{\NatRec{c : C}{\Zero}{P}{n}{c}{Q}}{P}{\Sb{C}{\Zero}{n}}
+          \EqTm{\NatRec{c. C}{\Zero}{P}{n}{c}{Q}}{P}{\Sb{C}{\Zero}{n}}
         }
       $
     \end{tabular}
@@ -489,12 +503,148 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
   \end{center}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Metatheory}
+  
+  \begin{theorem}[Decidability of type checking]
+    Given $\Gamma$, $\Tm{M}$, and $A$, it is decidable whether $\IsTm{M}{A}$.
+  \end{theorem}
+  
+  \begin{theorem}[Canonicity]
+    Let $\IsTm[]{M}{C}$. Then:
+    \begin{itemize}
+      \item if $C = A + B$ then either $\EqTm[]{M}{\Inl{P}}{A + B}$ for some $\IsTm[]{P}{A}$ or $\EqTm[]{N}{\Inr{Q}}{A + B}$ for some $\IsTm[]{Q}{B}$,
+      \item if $C = \Nat$ then $\EqTm[]{M}{\textsf{succ}^n(\Zero)}{\Nat}$ for some $n \in \mathbb{N}$
+      \item if $C = \DSum{x}{A}{B}$ then $\EqTm[]{M}{\Pair{P}{Q}}{\DSum{x}{A}{B}}$ for some $\IsTm[]{P}{A}$ and $\IsTm[]{Q}{\Sb{B}{P}{x}}$
+    \end{itemize}
+    Moreover, finding the ``canonical form'' of such terms is computable.
+  \end{theorem}
+
+  \begin{theorem}[Normalization]
+    Given $\Gamma$, $\Tm{M}$, $\Tm{N}$ and $A$, it is decidable whether
+    $\EqTm{M}{N}{A}$.
+  \end{theorem}
+  
+  \textbf{These results give MLTT its unusual computational flavour.}
+\end{frame}
+
 
 \section{Examples}
 
+\begin{frame}
+  \frametitle{A familiar construction (I)}
+  
+  Let $\IsTy{A, B}[]$, and $\IsTy[x : A, y : B]{R(\Tm{x}, \Tm{y})}[]$. Then
+  \[
+    \inferrule{
+      \inferrule*{
+        \inferrule*{
+          %
+        }{
+          \IsTy[x : A, y : B]{R(\Tm{x}, \Tm{y})}[]
+        }
+      }{
+        \IsTy[x : A]{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}[]
+      }
+    }{
+      \IsTy[]{\Fn{x}{A}{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}}[]
+    }
+  \]
+  This is essentially $\forall x : A.\ \exists y : B.\ R(\Tm{x}, \Tm{y})$.
+  
+  \medskip
+  
+  Similarly, recalling that $A \to B \defeq \Fn{x}{A}{B}$, we have
+  \[
+    \inferrule{
+      \inferrule*{\vdots}{
+        \IsTy[f : A \to B, x : A]{R(\Tm{x}, \Tm{f(x)})}[]
+      }
+    }{
+      \IsTy[]{\DSum{f}{A \to B}{\parens{\Fn{x}{A}{R(\Tm{x}, \Tm{f(x)})}}}}[] 
+    }
+  \]
+  This is essentially $\exists f : A \to B.\ \forall x : A.\ R(\Tm{x}, \Tm{f(x)})$.
+\end{frame}
 
+\begin{frame}
+  \frametitle{A familiar construction (II)}
+  
+  Let $\IsTy{A, B}[]$, and $\IsTy[x : A, y : B]{R(\Tm{x}, \Tm{y})}[]$. Then
+  \[
+    \IsTy[]{\Fn{x}{A}{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}}[]
+  \]
+  This is essentially $\forall x : A.\ \exists y : B.\ R(x, y)$.
+  
+  Similarly, recalling that $A \to B \defeq \Fn{x}{A}{B}$, we have
+  \[
+    \IsTy[]{\DSum{f}{A \to B}{\parens{\Fn{x}{A}{R(\Tm{x}, \Tm{f(x)})}}}}[] 
+  \]
+  This is essentially $\exists f : A \to B.\ \forall x : A.\ R(\Tm{x}, \Tm{f(x)})$.
+  
+  \begin{multline*}
+    \IsTm{?}{
+      \parens{\Fn{x}{A}{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}} \\ 
+      \to \parens{ \DSum{f}{A \to B}{\parens{\Fn{x}{A}{R(\Tm{x}, \Tm{f(x)})}}} }
+    } 
+  \end{multline*}
+  \pause
+  Indeed, this is the \textbf{type-theoretic ``axiom'' of choice}:
+  \begin{multline*}
+    \IsTm{
+      \Lam{g}{
+        \Pair{
+          \Lam{x}{\Proj[1]{\App{g}{x}}}
+        }{
+          \Lam{x}{\Proj[2]{\App{g}{x}}}
+        }
+      }
+    }{
+      \parens{\Fn{x}{A}{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}} \\ 
+      \to \parens{ \DSum{f}{A \to B}{\parens{\Fn{x}{A}{R(\Tm{x}, \Tm{f(x)})}}} }
+    } 
+  \end{multline*}
+\end{frame}
 
-\section{Universes}
+\begin{frame}
+  \frametitle{The type-theoretic ``axiom'' of choice}
+  
+  Let $\IsTy{A, B}[]$, and $\IsTy[x : A, y : B]{R(\Tm{x}, \Tm{y})}[]$. Then
+  \begin{multline*}
+    \IsTm{
+      \Lam{g}{
+        \Pair{
+          \Lam{x}{\Proj[1]{\App{g}{x}}}
+        }{
+          \Lam{x}{\Proj[2]{\App{g}{x}}}
+        }
+      }
+    }{
+      \parens{\Fn{x}{A}{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}} \\ 
+      \to \parens{ \DSum{f}{A \to B}{\parens{\Fn{x}{A}{R(\Tm{x}, \Tm{f(x)})}}} }
+    } 
+  \end{multline*}
+  Suppose $\Tm{g} : \Fn{x}{A}{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}$. Then clearly
+  \begin{align*}
+    \Tm{f} &\defeq \Tm{
+      \Lam{x}[A]{
+        \underbrace{\Proj[1]{\overbrace{\App{g}{x}}^{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}}}_{B}
+      }
+    } : A \to B 
+    \\
+    \Tm{h} &\defeq \Tm{
+      \Lam{x}[A]{
+        \underbrace{\Proj[2]{\overbrace{\App{g}{x}}^{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}}}_{
+          R(\Tm{x}, \Proj[1]{\App{g}{x}})
+        }
+      } 
+    } : \Fn{x}{A}{R(\Tm{x}, \Tm{\Proj[1]{\App{g}{x}}})}
+  \end{align*}
+  But $\Tm{\App{f}{x}} \equiv \Tm{\Proj[1]{\App{g}{x}}}$, so this type is equal
+  to $\Fn{x}{A}{R(\Tm{x}, \Tm{\App{f}{x}})}$. Hence $\Tm{\Lam{g}{\Pair{f}{h}}}$ has the
+  right type.
+  
+\end{frame}
 
 
 \end{document}
