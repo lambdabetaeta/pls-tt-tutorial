@@ -32,7 +32,7 @@
 
 \newcommand\doubleplus{+\kern-1.3ex+\kern0.8ex}
 
-\title{Type Theory and Homotopy \\ I. Constructions and dependence}
+\title{Type Theory and Homotopy \\ I. Constructions and Dependence}
 \author{
 		Alex Kavvos % \inst{1} % \orcidID{0000-0001-7953-7975}
 }
@@ -55,7 +55,34 @@
 \begin{frame}
   \frametitle{Intuitionism, Constructivism, and Type Theory}
   
-  Some general talk.
+  \begin{itemize}
+    \item Many different philosophies: Brouwerian intuitionism, Heyting
+      arithmetic, Russian constructivism, Bishop-style mathematics, etc. (see
+      Stanford Encyclopedia of Philosophy entries ``Intuitionism in the
+      Philosophy of Mathematics'' and ``Constructive Mathematics'').    
+
+    \item One common feature:
+      \begin{center}
+        \shadowbox{
+          \begin{minipage}{0.70\textwidth}
+            \centering
+            To prove that a mathematical object exists\\
+            you must show how to construct it.
+          \end{minipage}
+        }
+      \end{center}
+      
+    \item In particular, the details of the construction matters.
+      
+    \item Modern algebra: the structure of an isomorphism matters.
+
+    \item \textbf{Martin-L\"of Type Theory} (MLTT) was created as a
+      formalization of Bishop-style constructive mathematics.
+      
+    \item Less focus on \textbf{truth}, more focus on \textbf{proof}.
+
+  \end{itemize}
+
   
 \end{frame}
 
@@ -129,21 +156,26 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
   \frametitle{Martin-L\"of Type Theory (MLTT)}
 
   \begin{itemize}
-    \item Invented in the late 1960s to formalise constructive maths.
+    \item Invented by Per Martin-L\"of in the late 1960s.
     \item A formal theory in \textbf{natural deduction} style.
     \item Every term in the theory needs to have a \textbf{type}.
     \item There are \textbf{no propositions}, only types.
+
+    Every term is a \textbf{construction} which proves its \textbf{type}.
+
+    \begin{center}
+      \shadowbox{
+        \begin{minipage}{0.60\textwidth}
+          \centering
+          types = propositions (or predicates) \\ 
+          terms = proofs
+        \end{minipage}
+      }
+    \end{center}
+    \item ZFC: engine (first-order logic) + fuel (axioms) \\
+    MLTT: ``engine and fuel all in one'' (Pieter Hofstra, 1975--2022) 
   \end{itemize}
   
-  \begin{center}
-    \shadowbox{
-      \begin{minipage}{0.30\textwidth}
-        \centering
-        propositions = types\\
-        terms = proofs
-      \end{minipage}
-    }
-  \end{center}
 \end{frame}
 
 \begin{frame}
@@ -510,27 +542,35 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
 
   \begin{theorem}[Weakening]
     The following rule is admissible:
-    \[
+    $
       \inferrule{
         \Gamma, \Delta \vdash \mathcal{J} \\
-        \IsTy{A}
+        \IsTy{A}[]
       }{
         \Gamma, x : A, \Delta \vdash \mathcal{J}
       }
-    \]
+    $
   \end{theorem}
 
   \begin{theorem}[Substitution / Cut]
     The following rule is admissible:
-    \[
+    $
       \inferrule{
         \IsTm{M}{A} \\
         \Gamma, x : A, \Delta \vdash \mathcal{J}
       }{
         \Gamma, \Sb{\Delta}{M}{x} \vdash \Sb{\mathcal{J}}{M}{x}
       }
-    \]
+    $
   \end{theorem}
+  
+  \begin{theorem}
+    There is a set-theoretic model of MLTT with $\Pi$, $\Sigma$, $\Nat$, and $+$
+    types.
+  \end{theorem}
+  The model can be constructed in CZF (constructive ZF).
+
+  Corollary: the theory is consistent (if the ambient metatheory is).
 \end{frame}
 
 
@@ -544,9 +584,9 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
   \begin{theorem}[Canonicity]
     Let $\IsTm[]{M}{C}$. Then:
     \begin{itemize}
-      \item if $C = A + B$ then either $\EqTm[]{M}{\Inl{P}}{A + B}$ for some $\IsTm[]{P}{A}$ or $\EqTm[]{N}{\Inr{Q}}{A + B}$ for some $\IsTm[]{Q}{B}$,
-      \item if $C = \Nat$ then $\EqTm[]{M}{\textsf{succ}^n(\Zero)}{\Nat}$ for some $n \in \mathbb{N}$
-      \item if $C = \DSum{x}{A}{B}$ then $\EqTm[]{M}{\Pair{P}{Q}}{\DSum{x}{A}{B}}$ for some $\IsTm[]{P}{A}$ and $\IsTm[]{Q}{\Sb{B}{P}{x}}$
+      \item if $C \deq A + B$ then either $\EqTm[]{M}{\Inl{P}}{A + B}$ for some $\IsTm[]{P}{A}$ or $\EqTm[]{N}{\Inr{Q}}{A + B}$ for some $\IsTm[]{Q}{B}$,
+      \item if $C \deq \Nat$ then $\EqTm[]{M}{\textsf{succ}^n(\Zero)}{\Nat}$ for some $n \in \mathbb{N}$
+      \item if $C \deq \DSum{x}{A}{B}$ then $\EqTm[]{M}{\Pair{P}{Q}}{\DSum{x}{A}{B}}$ for some $\IsTm[]{P}{A}$ and $\IsTm[]{Q}{\Sb{B}{P}{x}}$
     \end{itemize}
     Moreover, finding the ``canonical form'' of such terms is computable.
   \end{theorem}
@@ -588,7 +628,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     \item $\IsTm[]{\Lam{u}{\Case{u}{x}{\Inr{x}}{y}{\Inl{y}}}}{A \lor B \to B \lor A}$
   \end{itemize}
   
-  \begin{theorem}
+  \begin{theorem}[Curry-Howard correspondence]
     All intuitionistically valid formulas/types are inhabited.
   \end{theorem}
 \end{frame}
@@ -630,7 +670,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     }{\Nat}
     \\
     &\IsTm[y : \Nat]{
-      \App{\App{\textsf{add}}{\Zero}}{y}
+      \App{\App{\textsf{add}}{\Succ{\Zero}}}{y}
         \deq
       \Succ{y}
     }{\Nat}
@@ -733,13 +773,13 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
   \end{multline*}
   Suppose $\Tm{g} : \Fn{x}{A}{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}$. Then clearly
   \begin{align*}
-    \Tm{f} &\defeq \Tm{
+    \Tm{f_g} &\defeq \Tm{
       \Lam{x}[A]{
         \underbrace{\Proj[1]{\overbrace{\App{g}{x}}^{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}}}_{B}
       }
     } : A \to B 
     \\
-    \Tm{h} &\defeq \Tm{
+    \Tm{h_g} &\defeq \Tm{
       \Lam{x}[A]{
         \underbrace{\Proj[2]{\overbrace{\App{g}{x}}^{\DSum{y}{B}{R(\Tm{x}, \Tm{y})}}}}_{
           R(\Tm{x}, \Proj[1]{\App{g}{x}})
@@ -748,10 +788,22 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     } : \Fn{x}{A}{R(\Tm{x}, \Tm{\Proj[1]{\App{g}{x}}})}
   \end{align*}
   But $\Tm{\App{f}{x}} \equiv \Tm{\Proj[1]{\App{g}{x}}}$, so this type is equal
-  to $\Fn{x}{A}{R(\Tm{x}, \Tm{\App{f}{x}})}$. Hence $\Tm{\Lam{g}{\Pair{f}{h}}}$ has the
+  to $\Fn{x}{A}{R(\Tm{x}, \Tm{\App{f}{x}})}$. Hence $\Tm{\Lam{g}{\Pair{f_g}{h_g}}}$ has the
   right type.
   
 \end{frame}
 
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+    \item MLTT is a formal theory of \textbf{constructions} and \textbf{dependence}.
+    \item It has very good metatheoretic and computational properties.
+    \item It is inherently `constructive' (for some sense of the word).
+  \end{itemize}
+  
+  \medskip
+
+  Tomorrow: equality as a proposition.
+\end{frame}
 
 \end{document}
