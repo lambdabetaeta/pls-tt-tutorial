@@ -2,10 +2,7 @@
 \beamertemplatenavigationsymbolsempty 
 
 \usepackage[utf8]{inputenc}
-\definecolor{BristolURed}{HTML}{B01C2E} % UBC Blue (primary)
-
-\usecolortheme[named=BristolURed]{structure}
-
+\usepackage{svg}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{mathtools}
@@ -16,6 +13,8 @@
 \usepackage{fancybox}
 \usepackage{../jmsdelim}
 \usepackage{../macros}
+
+\usecolortheme[named=BristolURed]{structure}
 
 \AtBeginSection[]{
   \begin{frame}
@@ -37,11 +36,12 @@
 		Alex Kavvos % \inst{1} % \orcidID{0000-0001-7953-7975}
 }
 
-\institute{
-		% \inst{1}
-    University of Bristol
-		% \email{alex.kavvos@bristol.ac.uk}
-}
+% \institute{
+% 		% \inst{1}
+%     University of Bristol
+% 		% \email{alex.kavvos@bristol.ac.uk}
+% }
+\titlegraphic{\includegraphics[scale=0.1]{../Bristol.png}}
 \date{Panhellenic Logic Symposium, 6--10 July 2022}
 
 
@@ -568,7 +568,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     There is a set-theoretic model of MLTT with $\Pi$, $\Sigma$, $\Nat$, and $+$
     types.
   \end{theorem}
-  The model can be constructed in CZF (constructive ZF).
+  The model can also be constructed in CZF (constructive ZF).
 
   Corollary: the theory is consistent (if the ambient metatheory is).
 \end{frame}

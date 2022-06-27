@@ -16,6 +16,17 @@
 \definecolor{MaizeCrayola}{RGB}{255, 204, 102}
 \definecolor{Black}{RGB}{0, 0, 0}
 
+% Bristol colours
+\definecolor{BristolURed}{HTML}{B01C2E}
+\definecolor{DarkBlue}{HTML}{002F5F}
+\definecolor{DarkPurple}{HTML}{42145F}
+\definecolor{DarkPink}{HTML}{772059}
+\definecolor{BrightPink}{HTML}{E0249A}
+\definecolor{BrightAqua}{HTML}{00C0B5}
+\definecolor{BrightPurple}{HTML}{9278D1}
+\definecolor{BrightBlue}{HTML}{0CC6DE}
+\definecolor{DarkLime}{HTML}{53682B}
+
 \NewDocumentEnvironment{grammar}{}{%
   \par\vspace{.5\baselineskip}
   \begin{tabular}{>{\itshape(}l<{)} >{$}l<{$} @{\quad $\Coloneqq$\quad } >{$}l<{$}}%
@@ -86,7 +97,7 @@
 % \Sb{M}{N}{x} is M[N/x], star parenthesises M
 \NewDocumentCommand{\Sb}{smmm}{
   \IfBooleanTF{#1}{\DelimPrn{#2}}{#2}
-  {\color{DogwoodRose}{\DelimBrk{\Tm{#3} / \color{black}{#4}}}}
+  {\color{BrightPink}{\DelimBrk{\Tm{#3} / \color{black}{#4}}}}
 }
 
 % Judgemental structure
