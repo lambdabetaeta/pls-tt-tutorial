@@ -156,8 +156,21 @@
   (#2; #3; #4, #5.\, #6)
 }
 %% Identity types
+\NewDocumentCommand{\Id}{mmm}{\mathsf{Id}_{#1}(\Tm{#2}, \Tm{#3})}
 \NewDocumentCommand{\Refl}{m}{\mathsf{refl}(#1)}
-\NewDocumentCommand{\IdRec}{mmm}{\mathsf{J}(#1, #2, #3)}
+\NewDocumentCommand{\IdRec}{ommm}{
+  \mathsf{J}
+    \IfNoValueTF{#1}{}{_{[#1]}}
+  (#2; #3.\, #4)
+}
+
+% Some simple macros
+\NewDocumentCommand{\Ap}{mm}{\textsf{ap}_{#1}(#2)}
+\NewDocumentCommand{\Transport}{om}{
+  \mathsf{transp}
+    \IfNoValueTF{#1}{}{_{[#1]}}
+  (#2)
+}
 
 \NewDocumentCommand{\Var}{G{k}}{\mathbf{v}_{#1}}
 \NewDocumentCommand{\Ax}{}{\star}
@@ -165,7 +178,6 @@
 \NewDocumentCommand{\Uni}{}{\mathsf{U}}
 \NewDocumentCommand{\Dec}{m}{\mathsf{El}(#1)}
 \NewDocumentCommand{\Enc}{m}{\mathsf{Code}(#1)}
-\NewDocumentCommand{\Id}{mmm}{\mathsf{Id}_{#1}(#2, #3)}
 \NewDocumentCommand{\Idsym}{}{\mathsf{Id}}
 \NewDocumentCommand{\Eq}{mmm}{\mathsf{Eq}_{#1}(#2, #3)}
 
