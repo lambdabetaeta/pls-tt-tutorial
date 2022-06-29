@@ -1,0 +1,442 @@
+\documentclass[handout]{beamer} % use [handout] option to stop pauses
+\beamertemplatenavigationsymbolsempty 
+
+\usepackage[utf8]{inputenc}
+\usepackage{svg}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{libertine}
+\usepackage{xparse}
+\usepackage{mathpartir}
+\usepackage{fancybox}
+\usepackage{../jmsdelim}
+\usepackage{../macros}
+
+\usecolortheme[named=BristolURed]{structure}
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center,shadow=true]{title}
+		\usebeamerfont{title}
+		\scshape
+		\uppercase\expandafter{\romannumeral\insertsectionnumber\relax}.~\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+\newcommand\doubleplus{+\kern-1.3ex+\kern0.8ex}
+
+\title{Type Theory and Homotopy \\ II. Equality, Universes, and Homotopy}
+\author{
+		Alex Kavvos % \inst{1} % \orcidID{0000-0001-7953-7975}
+}
+
+% \institute{
+% 		% \inst{1}
+%     University of Bristol
+% 		% \email{alex.kavvos@bristol.ac.uk}
+% }
+\titlegraphic{\includegraphics[scale=0.1]{../Bristol.png}}
+\date{Panhellenic Logic Symposium, 6--10 July 2022}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Equality}
+
+  Recall that we could define
+  \[
+    \IsTm[]{\textsf{add}\ {\color{black}{=}}\
+      \Lam{x}{\Lam{y}{
+        \NatRec{x}{y}{n}{c}{\Succ{n}}
+      }}}{\Nat \to \Nat \to \Nat}
+  \]
+  and compute that
+  \[
+    \IsTm[y : \Nat]{
+      \App{\App{\textsf{add}}{\Zero}}{y}
+        \deq
+      y
+    }{\Nat}
+  \]
+  It is \textbf{not} the case that
+  \[
+    \IsTm[x : \Nat]{
+      \App{\App{\textsf{add}}{x}}{\Zero}
+        \deq
+      x
+    }{\Nat}
+  \]
+  $\deq$ only allows unfolding of definitions, \textbf{not} non-trivial
+  theorems.
+  
+  \medskip
+  
+  For that we need to introduce the \textbf{identity type}.
+\end{frame}
+
+
+
+\section{Identity Types}
+
+
+
+\begin{frame}
+  \frametitle{Intensional Identity Types}
+  \small
+  
+  \begin{center}
+      \renewcommand{\arraystretch}{2.5}
+    \begin{tabular}{p{1cm}c}
+      form. &
+      $
+        \inferrule{
+          \IsTm{M}{A} \\
+          \IsTm{N}{A}
+        }{
+          \IsTy{\Id{A}{M}{N}}[]
+        }
+      $ \\
+      intro. &
+      $
+        \inferrule{
+          \IsTm{M}{A}
+        }{
+          \IsTm{\Refl{M}}{\Id{A}{M}{M}}
+        }
+      $ \\[2ex]
+      elim. &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A, y : A, p : \Id{A}{x}{y}]{B}[] \\
+          \IsTm{P}{\Id{A}{M}{N}} \\
+          \IsTm[\Gamma, z : A]{Q}{\Sb{B}{z, z, \Refl{z}}{x, y, p}}
+        }{
+          \IsTm{
+            \IdRec[x, y, p. B]{P}{z}{Q}
+          }{\Sb{B}{M, N, P}{x, y, p}}
+        }
+      $ 
+      \\[2ex]
+      comp. &
+      $
+        \inferrule{
+          \IsTy[\Gamma, x : A, y : A, p : \Id{A}{x}{y}]{B}[] \\
+          \IsTm[\Gamma, z : A]{Q}{\Sb{B}{z, z, \Refl{z}}{x, y, p}}
+        }{
+          \EqTm{
+            \IdRec{\Refl{M}}{z}{Q}
+          }{
+            \Sb{Q}{M}{z}
+          }{
+            \Sb{B}{M, M, \Refl{M}}{x, y, p}
+          }
+        }
+      $
+    \end{tabular}
+  \end{center}
+  Because of the \textbf{type conversion} and \textbf{congruence} rules we
+  always have
+  \begin{mathpar}
+    \inferrule{
+      \EqTm{M}{N}{A}
+    }{
+      \IsTm{\Refl{M}}{\Id{A}{M}{N}}
+    }
+  \end{mathpar}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some examples (I)}
+  \small
+  
+  \begin{itemize}
+    \item Let $\IsTy[]{A}[]$ and $\IsTy[x : A]{P(x)}[]$. We have:
+     \[ 
+       \IsTm[x, y : A, p : \Id{A}{x}{y}]{
+        \Transport{p} \deq \IdRec{p}{z}{\Lam{w}{w}}
+       }{B(x) \to B(y)}
+    \]
+    Informally:
+    \begin{quote}
+      \normalfont
+      Let $x, y : A$ and $p : \Id{A}{x}{y}$. We want to construct a term of type
+      $B(x) \to B(y)$. By \textbf{induction} we may assume that $x \equiv y$, so
+      it suffices to give a term $B(x) \to B(x)$. Take the identity function.
+    \end{quote}
+
+    \item Let $\IsTm[x : A]{f(x)}{B}$. Then $\IsTy[x, y :
+      A]{\Id{B}{f(x)}{f(y)}}[]$. 
+    
+    We have
+      \[
+        \IsTm[x, y : A, p : \Id{A}{x}{y}]{
+          \Ap{f}{p} \deq \IdRec{p}{x}{\Refl{f(x)}}
+        }{\Id{B}{f(x)}{f(y)}}
+      \]
+      Informally:
+      \begin{quote}
+        \normalfont
+        Let $x, y : A$ and $p : \Id{A}{x}{y}$. We want to show
+        $\Id{B}{f(x)}{f(y)}$. By \textbf{induction} we may assume that $x \equiv
+        y$, so it suffices to construct a term of type $\Id{B}{f(x)}{f(x)}$.
+        Take $\Tm{\Refl{f(x)}}$.
+      \end{quote}
+  \end{itemize}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Some examples (II)}
+  
+  Here is an informal proof that there is a term of type
+  \[
+    \IsTy[x : \Nat]{
+      \Id{\Nat}{
+        \App{\App{\textsf{add}}{x}}{\Zero}
+      }{
+        x
+      }
+    }[]
+  \]
+  We proceed by induction on $x : \Nat$.
+  \begin{itemize}
+    \item If $x \deq \Tm{\Zero} : \Nat$, then 
+      $
+      \Tm{\App{\App{\textsf{add}}{x}}{\Zero}}
+        \deq
+      \Tm{\App{\App{\textsf{add}}{\Zero}}{\Zero}}
+        \deq 
+      \Tm{\Zero}
+      $.
+      Hence it suffices to construct $\Tm{\Refl{\Zero}} : \Id{\Nat}{\Zero}{\Zero}$.
+    \item If $x \deq \Tm{\Succ{y}} : \Nat$ for some $y : \Nat$, then
+    \[
+      \Tm{\App{\App{\textsf{add}}{x}}{\Zero}}
+        \deq
+      \Tm{\App{\App{\textsf{add}}{\Succ{y}}}{\Zero}}
+        \deq
+      \Tm{\Succ{\App{\App{\textsf{add}}{y}}{\Zero}}}
+    \]
+    By the IH we have $p : \Id{\Nat}{\App{\App{\textsf{add}}{y}}{\Zero}}{y}$.
+    Hence 
+    \[
+    \Tm{\Ap{\Succ{-}}{p}} : \Id{\Nat}{
+      \underbrace{\Succ{\App{\App{\textsf{add}}{y}}{\Zero}}}_{
+        \deq\ \App{\App{\textsf{add}}{x}}{\Zero}
+      }
+    }{
+      \underbrace{\Succ{y}}_{\deq\ x}
+    }
+    \]
+
+    So we have shown the inductive step.
+  \end{itemize}
+    
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Metatheory}
+
+  \begin{theorem}
+    The following rule is admissible.
+    \begin{mathpar}
+      \inferrule{
+        \IsTm[]{P}{\Id{A}{M}{N}}
+      }{
+        \EqTm[]{M}{N}{A}
+      }
+    \end{mathpar}
+  \end{theorem}
+
+  Any two propositionally equal terms in an \textbf{empty context}\\ are also definitionally equal.
+  
+  \medskip
+  
+  This did not apply to our previous proof because $x : \Nat$ was free.
+  
+  \medskip
+
+  Hence the name `intensional.'
+\end{frame}
+
+\begin{frame}
+  \frametitle{Extensional Identity Types}
+  
+  One might argue that $
+    \IsTm[x : \Nat]{\ldots}{
+      \Id{\Nat}{
+        \App{\App{\textsf{add}}{x}}{\Zero}
+      }{
+        x
+      }
+    }
+  $
+  should be promoted to a definitional equality
+  \[
+    \EqTm[x : \Nat]{
+      \App{\App{\textsf{add}}{x}}{\Zero}
+    }{
+      x
+    }{\Nat}
+  \]
+  Add \textbf{equality reflection} rule: % and \textbf{equality uniqueness} rules:
+  \begin{mathpar}
+    \inferrule{
+      \IsTm{P}{\Id{A}{M}{N}}
+    }{
+      \EqTm{M}{N}{A}
+    }
+    % \and
+    % \inferrule{
+    %   \IsTm{P}{\Id{A}{M}{N}}
+    % }{
+    %   \EqTm{P}{\Refl{M}}{\Id{A}{M}{M}}
+    % }
+  \end{mathpar}
+  We then say we have \textbf{extensional identity types}. But then
+  \begin{itemize}
+    \item normalization is no longer decidable, and hence
+    \item \textbf{type checking is no longer decidable}
+  \end{itemize}
+  
+  % I asked Daniel whether we need the uniqueness rule, and our consensus
+  % seems to be that J + computation + eq refl <=> eq refl + eq uniq.
+
+  So we are stuck with the `bureaucracy' of intensional identity types.
+  
+  \medskip
+  
+  But this is a fine type theory for computing by hand.
+
+  (It is the \textbf{internal language} of locally cartesian closed categories.)
+
+\end{frame}
+
+\section{Universes}
+
+\begin{frame}
+  \frametitle{Identity types are not good enough}
+  
+  \begin{theorem}[Jan Smith, J. Symb. Log. 1988]
+    The type correspondong to Peano's fourth axiom, i.e.
+    \[
+      \IsTy[n : \Nat]{\Id{\Nat}{0}{\Succ{n}} \to \mathbf{0}}[]
+    \]
+    is \textbf{not} inhabited in MLTT with $\Pi$, $\Sigma$, and identity types.
+  \end{theorem}
+  Proof: construct a model of MLTT where types are subsingleton sets.
+
+  \medskip
+
+  To prove Peano 4, we intuitively want to
+  \begin{enumerate}
+    \item \Alert{construct a type family} $\IsTy[n : \Nat]{B(n)}[]$ for which
+      $B(\Tm{\Zero})$ is inhabited, while $\IsTy[n : \Nat]{B(\Tm{\Succ{n}})}[]$
+      is always empty.
+    \item assuming $\IsTm[n : \Nat]{p}{\Id{\Nat}{0}{\Succ{n}}}$ and
+      $\IsTm[]{M}{B(\Tm{\Zero})}$, obtain $\IsTm[n :
+      \Nat]{\App{\Transport{p}}{M}}{B(\Tm{\Succ{n}})} \deq \textbf{0}$
+  \end{enumerate}
+  We cannot perform Step 1 because types are not terms.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Universes \`{a} la Russell}
+  We introduce the \textbf{universe}, a \textbf{type of all (small) types}.
+  \begin{mathpar}
+    \inferrule{ }{\IsTy{\Uni}[]}
+    \and
+    \inferrule{
+      \IsTm{A}{\Uni}
+    }{
+      \IsTy{A}[]
+    }
+  \end{mathpar}
+  plus one rule for each type constructor, e.g.
+  \begin{mathpar}
+    \inferrule{
+      \IsTm{A}{\Uni} \\
+      \IsTm[\Gamma, x : \Uni]{B}{\Uni}
+    }{
+      \IsTm{\Fn{x}{A}{B}}{\Uni}
+    }
+  \end{mathpar}
+  \Alert{Caution}. We must \textbf{not} have
+  \[
+    \inferrule{ }{\IsTm{\Uni}{\Uni}}
+  \]
+  because that causes a Russell-style paradox (Girard's paradox).
+  
+  \medskip
+  
+  Types may then be constructed as terms of $\Uni$ (e.g. by induction).
+\end{frame}
+
+
+\section{Homotopy}
+
+\begin{frame}
+  \frametitle{Intensional identity types very mysterious}
+  
+  why so difficult
+
+  extensional bad because undecidable
+
+  so why mysterious?
+  
+  homotopy!
+\end{frame}
+
+\begin{frame}
+  \frametitle{Models of intensional identity types}
+  
+  Hofmann Streicher model
+
+  UIP principle
+\end{frame}
+
+\begin{frame}
+  \frametitle{Homotopy theory}
+
+  homotopi
+\end{frame}
+
+\begin{frame}
+  \frametitle{Homotopy \emph{type} theory}
+  
+  Awodey/Warren and Voevodsky
+\end{frame}
+
+\begin{frame}
+  \frametitle{Extensionality principles}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Univalence}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{References}
+  \bibliographystyle{amsalpha}
+  \bibliography{../refs.bib}
+  \nocite{hott_2013}
+  \nocite{awodey_2012}
+  \nocite{shulman_2017}
+\end{frame}
+
+
+\end{document}
