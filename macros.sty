@@ -163,8 +163,23 @@
     \IfNoValueTF{#1}{}{_{[#1]}}
   (#2; #3.\, #4)
 }
+\NewDocumentCommand{\Idsym}{}{\mathsf{Id}}
+\NewDocumentCommand{\Eq}{mmm}{\mathsf{Eq}_{#1}(#2, #3)}
+% Booleans
+\NewDocumentCommand{\Bool}{}{\mathbb{B}}
+\NewDocumentCommand{\True}{}{\mathsf{tt}}
+\NewDocumentCommand{\False}{}{\mathsf{ff}}
+\NewDocumentCommand{\BoolRec}{mmmm}{\mathsf{if}(#1; #2; #3; #4)}
+%% W types
+\NewDocumentCommand{\WtypeV}{mmm}{\mathsf{W}(#1 : #2).#3}
+\NewDocumentCommand{\Wsym}{}{\mathsf{W}}
+\NewDocumentCommand{\Wsup}{mm}{\mathsf{sup}(#1,#2)}
+%% Universe
+\NewDocumentCommand{\Uni}{}{\mathsf{U}}
+\NewDocumentCommand{\Dec}{m}{\mathsf{El}(#1)}
+\NewDocumentCommand{\Enc}{m}{\mathsf{Code}(#1)}
 
-% Some simple macros
+% Some simple HoTT macros
 \NewDocumentCommand{\Ap}{mm}{\textsf{ap}_{#1}(#2)}
 \NewDocumentCommand{\Transport}{om}{
   \mathsf{transp}
@@ -172,70 +187,4 @@
   (#2)
 }
 
-\NewDocumentCommand{\Var}{G{k}}{\mathbf{v}_{#1}}
-\NewDocumentCommand{\Ax}{}{\star}
-\NewDocumentCommand{\TyLift}{m}{{\Uparrow}#1}
-\NewDocumentCommand{\Uni}{}{\mathsf{U}}
-\NewDocumentCommand{\Dec}{m}{\mathsf{El}(#1)}
-\NewDocumentCommand{\Enc}{m}{\mathsf{Code}(#1)}
-\NewDocumentCommand{\Idsym}{}{\mathsf{Id}}
-\NewDocumentCommand{\Eq}{mmm}{\mathsf{Eq}_{#1}(#2, #3)}
-
-\NewDocumentCommand{\ISb}{}{\mathsf{id}}
-\NewDocumentCommand{\ESb}{mm}{{#1}.{#2}}
-\NewDocumentCommand{\Wk}{O{}}{{\uparrow^{#1}}}
-\NewDocumentCommand{\Bool}{}{\mathbb{B}}
-\NewDocumentCommand{\True}{}{\mathsf{tt}}
-\NewDocumentCommand{\False}{}{\mathsf{ff}}
-\NewDocumentCommand{\BoolRec}{mmmm}{\mathsf{if}(#1; #2; #3; #4)}
-\NewDocumentCommand{\WtypeV}{mmm}{\mathsf{W}(#1 : #2).#3}
-\NewDocumentCommand{\Wsym}{}{\mathsf{W}}
-\NewDocumentCommand{\Wsup}{mm}{\mathsf{sup}(#1,#2)}
-
-\NewDocumentCommand{\El}{m}{\tau_{#1}}
-\NewDocumentCommand{\CFam}{m}{\mathcal{F}_{#1}}
-\NewDocumentCommand{\CTy}{m}{\mathcal{T}_{#1}}
-\NewDocumentCommand{\CSTy}{m}{\mathcal{S}_{#1}}
-\NewDocumentCommand{\CTm}{m}{\widetilde{\mathcal{T}}_{#1}}
-
-\NewDocumentCommand{\CVar}{}{\mathbf{q}}
-\NewDocumentCommand{\CWk}{}{\mathbf{p}}
-\NewDocumentCommand{\CPi}{}{{\textstyle \prod}}
-\NewDocumentCommand{\CLam}{}{\mathbf{lam}}
-\NewDocumentCommand{\CApp}{}{\mathbf{app}}
-\NewDocumentCommand{\CSig}{}{{\textstyle\sum}}
-\NewDocumentCommand{\CPair}{}{\mathbf{pair}}
-\NewDocumentCommand{\CModify}{O{\mu}}{\mathbf{Mod}_{#1}}
-\NewDocumentCommand{\CMkBox}{O{\mu}}{\mathbf{mod}_{#1}}
-\NewDocumentCommand{\COpen}{O{\mu}}{\mathbf{open}_{#1}}
-\NewDocumentCommand{\CBool}{}{\mathbf{Bool}}
-\NewDocumentCommand{\CFalse}{}{\mathbf{ff}}
-\NewDocumentCommand{\CTrue}{}{\mathbf{tt}}
-\NewDocumentCommand{\CRec}{}{\mathbf{if}}
-\NewDocumentCommand{\CNat}{}{\mathbf{Nat}}
-\NewDocumentCommand{\CZero}{}{\mathbf{zero}}
-\NewDocumentCommand{\CSucc}{}{\mathbf{succ}}
-\NewDocumentCommand{\CNatRec}{}{\mathbf{rec}}
-\NewDocumentCommand{\CId}{}{\mathbf{Id}}
-\NewDocumentCommand{\CEq}{}{\mathbf{Eq}}
-\NewDocumentCommand{\CRefl}{}{\mathbf{refl}}
-\NewDocumentCommand{\CIdRec}{}{\mathbf{J}}
-\NewDocumentCommand{\CECx}{mm}{#1.#2}
-\NewDocumentCommand{\CLift}{}{\mathbf{lift}}
-\NewDocumentCommand{\CUni}{}{\mathbf{Uni}}
-\NewDocumentCommand{\CDec}{}{\mathbf{el}}
-\NewDocumentCommand{\CEnc}{}{\mathbf{code}}
-
 \NewDocumentCommand{\Interp}{m}{\llbracket #1 \rrbracket}
-
-\NewDocumentCommand{\BoolIso}{s}{\mathsf{b}\IfBooleanT{#1}{^{\text{-1}}}}
-
-\NewDocumentCommand{\IdIso}{s}{\mathsf{id}\IfBooleanT{#1}{^{\text{-1}}}}
-
-\NewDocumentCommand{\TranspAdj}{smm}{\IfBooleanT{#1}{\left(}\mathbf{transp}_{#2 \Adjoint #3}^{\rightarrow}\IfBooleanTF{#1}{\right)^{\text{-1}}}}
-\NewDocumentCommand{\UntranspAdj}{mm}{\mathbf{transp}_{#1 \Adjoint #2}^{\leftarrow}}
-\NewDocumentCommand{\Swap}{mm}{\mathbf{swap}_{#1,#2}}
-
-%% Non-TT stuff
-\NewDocumentCommand{\Rel}{}{\mathrm{Rel}}
-\NewDocumentCommand{\EqinRel}{}{\mathrm{Eq}}

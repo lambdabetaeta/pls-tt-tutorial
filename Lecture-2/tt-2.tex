@@ -13,6 +13,7 @@
 \usepackage{fancybox}
 \usepackage{../jmsdelim}
 \usepackage{../macros}
+\usepackage{../categories}
 
 \usecolortheme[named=BristolURed]{structure}
 
@@ -260,7 +261,7 @@
     \end{mathpar}
   \end{theorem}
 
-  Any two propositionally equal terms in an \textbf{empty context}\\ are also definitionally equal.
+  Any two propositionally equal terms in an \textbf{empty context}\\ are also definitionally equal. (Hence the name `intensional.')
   
   \medskip
   
@@ -268,7 +269,9 @@
   
   \medskip
 
-  Hence the name `intensional.'
+  \begin{theorem}
+    There is a set-theoretic model of MLTT with $\Pi$, $\Sigma$, $\textsf{Id}$, $\Nat$, and $+$ types.
+  \end{theorem}
 \end{frame}
 
 \begin{frame}
@@ -320,7 +323,7 @@
   
   But this is a fine type theory for computing by hand.
 
-  (It is the \textbf{internal language} of locally cartesian closed categories.)
+  % (It is the \textbf{internal language} of locally cartesian closed categories.)
 
 \end{frame}
 
@@ -388,29 +391,130 @@
 \section{Homotopy}
 
 \begin{frame}
-  \frametitle{Intensional identity types very mysterious}
-  
-  why so difficult
+  \frametitle{Identity types are very mysterious}
+  Let $\IsTm[]{M, N}{A}$. Construct $\IsTy[]{\Id{A}{M}{N}}[]$.
 
-  extensional bad because undecidable
+  \medskip
 
-  so why mysterious?
-  
-  homotopy!
+  Now suppose $\IsTm[]{P, Q}{\Id{A}{M}{N}}$.
+
+  \medskip
+
+  What is the meaning of the following type?
+  \[
+    \IsTy[]{\Id{\Id{A}{M}{N}}{P}{Q}}[]
+  \]
+
+  Should the following be inhabited/provable?
+  \[
+    \IsTy[]{
+      \Fn{A}{U}{
+        \Fn{x, y}{A}{
+          \Fn{p, q}{\Id{A}{x}{y}}{
+            \Id{\Id{A}{x}{y}}{p}{q}
+          }
+        }
+      }
+    }[]
+  \]
+  It's certainly true in the set-theoretic model!
+  \begin{theorem}[Hofmann-Streicher, 1998]
+    There is a model of MLTT in which the above principle of \textbf{uniqueness of identity proofs} (UIP) is \textbf{not} true.
+  \end{theorem}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Models of intensional identity types}
+  \frametitle{Groupoids}
   
-  Hofmann Streicher model
+  \begin{definition}
+    A \textbf{groupoid} $\mathcal{G}$ consists of
+    \begin{itemize}
+      \item a set of \textbf{objects} $\Ob{\mathcal{G}}$
+      \item for $x, y \in \Ob{\mathcal{G}}$ a set of \textbf{isomorphisms} $\Hom{x}{y}$
+        
+      We write $f : x \Iso y$ if $f \in \Hom{x}{y}$.
+      \item for each $x \in \Ob{\mathcal{G}}$ an \textbf{identity} $1_x \in \Hom{x}{x}$
+      \item for isos $f : x \Iso y$ and $g : y \Iso z$ a \textbf{composite}
+      \[
+        g \circ f : x \Iso z
+      \]
+      \item for each iso $f : x \Iso y$ and \textbf{inverse iso} $f^{-1} : y \Iso x$,
+      such that
+      \begin{align*}
+        f^{-1} \circ f &= 1_x : x \Iso x &
+        f \circ f^{-1} &= 1_y : y \Iso y
+      \end{align*}
+    \end{itemize}
+  \end{definition}
+  
+  A \textbf{one-object} groupoid is \dots \pause a group!
 
-  UIP principle
+  \smallskip
+  
+  If $\lvert \Hom{x}{y} \rvert \leq 1$ a groupoid is \dots  \pause an equivalence
+  relation!
 \end{frame}
 
 \begin{frame}
-  \frametitle{Homotopy theory}
+  \frametitle{The Hofmann-Streicher groupoid model of type theory}
+  
+  Hofmann and Streicher interpreted MLTT as follows:
+  \begin{itemize}
+    \item $\IsTy[]{A}[]$ is interpreted by a groupoid $\Interp{A}$.
+    \item A type family/dependent type $\IsTy[x : A]{B}[]$ is interpreted by a \textbf{fibration} of groupoids
+    \[
+      \Interp{B} : \Interp{A} \to \GPD
+    \]
+    In particular, if $p : x \Iso y$ in $\Interp{A}$ then we have an isomorphism of groupoids $\Interp{B}(p) : \Interp{B}(x) \Iso \Interp{B}(y)$.
 
-  homotopi
+    \medskip
+
+    \item The identity type $\IsTy{\Id{A}{M}{N}}[]$ is interpreted by the set of isomorphisms of the groupoid $\Interp{A}$, i.e.
+    \[
+      \Hom[\Interp{A}]{\Interp{M}}{\Interp{N}}
+    \]
+  \end{itemize}
+
+  \medskip
+
+  In this model there are types with non-trivial identity types.
+
+  \medskip
+  
+  But where do groupoids come from?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Homotopy}
+
+  Let $X$ and $Y$ be spaces. Let $f, g : X \to Y$ be continuous functions.
+
+  \begin{definition}
+    A \textbf{homotopy} from $f$ to $g$ is a continuous function
+    \[
+      H : X \times [0, 1] \to Y
+    \]
+    such that $H(-, 0) = f$ and $H(-, 1) = g$.
+  \end{definition}
+  
+  We write $f \simeq g$ if there is a homotopy from $f$ to $g$.
+
+  This is an equivalence relation!
+\end{frame}
+
+\begin{frame}
+  \frametitle{Homotopy equivalence}
+
+  \begin{definition}
+    The spaces $X$ and $Y$ are \textbf{homotopy-equivalent} if
+    there are continuous functions $f : X \to Y$ and $g : Y \to X$ such that
+    \begin{align*}
+      g \circ f &\simeq 1_X 
+      f \circ g &\simeq 1_Y
+    \end{align*}
+    where $1_X$ and $1_Y$ are the continuous identity functions on $X$ and $Y$
+    respectively.
+  \end{definition}
 \end{frame}
 
 \begin{frame}
