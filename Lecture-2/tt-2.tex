@@ -34,7 +34,7 @@
 
 \newcommand\doubleplus{+\kern-1.3ex+\kern0.8ex}
 
-\title{Type Theory and Homotopy \\ II. Equality, Universes, and Homotopy}
+\title{Type Theory and Homotopy \\ II. Identity and Homotopy}
 \author{
 		Alex Kavvos % \inst{1} % \orcidID{0000-0001-7953-7975}
 }
@@ -329,6 +329,7 @@
 
 \end{frame}
 
+
 \section{Homotopy}
 
 \begin{frame}
@@ -346,14 +347,12 @@
     \IsTy[]{\Id{\Id{A}{M}{N}}{P}{Q}}[]
   \]
 
-  Should the following be inhabited/provable?
+  Should the following be inhabited for any type $\IsTy{A}[]$?
   \[
     \IsTy[]{
-      \Fn{A}{U}{
-        \Fn{x, y}{A}{
-          \Fn{p, q}{\Id{A}{x}{y}}{
-            \Id{\Id{A}{x}{y}}{p}{q}
-          }
+      \Fn{x, y}{A}{
+        \Fn{p, q}{\Id{A}{x}{y}}{
+          \Id{\Id{A}{x}{y}}{p}{q}
         }
       }
     }[]
@@ -535,9 +534,9 @@
   \end{center}
   
   If $1_x : x \Path x$ and $1_y : y \Path y$ are constant paths then
-  \[
+  $
     p \Concat 1_y \simeq p \simeq 1_x \Concat p
-  \]
+  $.
 \end{frame}
 
 \begin{frame}
@@ -573,8 +572,145 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{$\infty$-Groupoids}
   
+  The fundamental insight: 
+  \begin{center}
+    \shadowbox{Why quotient at all?}
+  \end{center}
+
+  \begin{definition}
+    A \textbf{groupoid} $\mathcal{G}$ consists of
+    \begin{itemize}
+      \item a set of \textbf{objects} $\Ob{\mathcal{G}}$
+      \item for $x, y \in \Ob{\mathcal{G}}$ a set of \textbf{isomorphisms} $\Hom{x}{y}$
+
+      \vdots
+    \end{itemize}
+  \end{definition}
+
+  \begin{definition}[sort of]
+    An \textbf{$\infty$-groupoid} $\mathcal{G}$ consists of
+    \begin{itemize}
+      \item a set of \textbf{objects} $\Ob{\mathcal{G}}$
+      \item for $x, y \in \Ob{\mathcal{G}}$ an \textbf{$\infty$-groupoid} $\Hom{x}{y}$
+
+      \vdots
+    \end{itemize}
+  \end{definition}
 \end{frame}
+
+\begin{frame}
+  \frametitle{The Fundamental $\infty$-Groupoid}
+
+  Let $X$ be a space. Its \textbf{fundamental $\infty$-groupoid} $\pi_\infty(X)$
+  consists of
+  \begin{description}
+    \item[0-cells] the points of $X$
+    \item[1-cells] paths $p : x \Path y$ between points
+    \item[2-cells] homotopies $H : p \simeq q$ between paths
+
+    \vdots
+  \end{description}
+  
+  \medskip
+
+  Exact structure tiresome to describe (globular, simplicial, cubical).
+
+  \medskip
+
+  Grothendieck's (1928--2014) dream, aka the \textbf{homotopy hypothesis}:
+  \begin{center}
+    \shadowbox{$\infty$-groupoids = topological spaces up to homotopy}
+
+    \includegraphics[scale=0.3]{mug.jpg}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Identity Types and Homotopy}
+
+  The intended allegory:
+  \begin{center}
+    \shadowbox{
+      \begin{minipage}{0.80\textwidth}
+        \centering
+          types = spaces = $\infty$-groupoids
+
+          elements of the identity type = paths in the space
+      \end{minipage}
+    }
+  \end{center}
+  
+  For example, given $\IsTy[]{A}[]$ we can write down a term
+  \[
+    \Concat : \Fn{x, y, z}{A}{
+      \Id{A}{x}{y}
+      \to
+      \Id{A}{y}{z}
+      \to
+      \Id{A}{x}{z}
+    }
+  \]
+  \textbf{Informal proof}: Suppose $x, y, z : A$, $p : \Id{A}{x}{y}$, and $q :
+  \Id{A}{y}{z}$. By the elimination rule we may assume that $x \deq y$ and $y
+  \deq z$, so it suffices to define a term of type $\Id{A}{x}{x}$. Take
+  $\Refl{x}$.
+  
+  \medskip
+  
+  Remember that because of the \textbf{computation rule} we have
+  \[
+    \Refl{x} \Concat \Refl{x} \deq \Refl{x}
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Associativity of composition}
+  
+  Given $x, y, z : A$ we can then define a term
+  \begin{multline*}
+    \textsf{assoc}_{xyz} :
+    \Fn{p}{\Id{A}{x}{y}}{
+      \Fn{q}{\Id{A}{y}{z}}{
+        \Fn{r}{\Id{A}{z}{w}}{ \\
+          \Id{\Id{A}{x}{w}}{(p \Concat q) \Concat r}{p \Concat (q \Concat r)}
+        }
+      }
+    }
+  \end{multline*}
+  
+  \textbf{Informal proof}. Given $p, q, r$ as above we may assume that $x \deq y
+  \deq z \deq w$ and $p \deq q \deq r \deq \Refl{x}$. Thus, need only a term of
+  type
+  \[
+    \Id{\Id{A}{x}{x}}{
+      \underbrace{(p \Concat q) \Concat r}_{
+        \deq\ \Refl{x}
+      }
+    }{
+      \underbrace{p \Concat (q \Concat r)}_{
+        \deq\ \Refl{x}
+      }
+    }
+  \]
+  Take $\Refl{\Refl{x}}$.
+  
+  \medskip
+  
+  The moral:
+  \begin{center}
+    \shadowbox{
+      \begin{minipage}{0.80\textwidth}
+        \centering
+          The elimination rule of the identity type \\
+          generates the structure of an $\infty$-groupoid.
+      \end{minipage}
+    }
+  \end{center}
+  In other words, MLTT is a \textbf{synthetic} theory of $\infty$-groupoids.
+\end{frame}
+
 
 \begin{frame}
   \frametitle{References}
