@@ -11,6 +11,8 @@
 \usepackage{xparse}
 \usepackage{mathpartir}
 \usepackage{fancybox}
+\usepackage{graphicx}
+\usepackage{tikz}
 \usepackage{../jmsdelim}
 \usepackage{../macros}
 \usepackage{../categories}
@@ -461,15 +463,12 @@
   Hofmann and Streicher interpreted MLTT as follows:
   \begin{itemize}
     \item $\IsTy[]{A}[]$ is interpreted by a groupoid $\Interp{A}$.
-    \item A type family/dependent type $\IsTy[x : A]{B}[]$ is interpreted by a \textbf{fibration} of groupoids
-    \[
-      \Interp{B} : \Interp{A} \to \GPD
-    \]
-    In particular, if $p : x \Iso y$ in $\Interp{A}$ then we have an isomorphism of groupoids $\Interp{B}(p) : \Interp{B}(x) \Iso \Interp{B}(y)$.
-
-    \medskip
-
-    \item The identity type $\IsTy{\Id{A}{M}{N}}[]$ is interpreted by the set of isomorphisms of the groupoid $\Interp{A}$, i.e.
+    \item A type family/dependent type $\IsTy[x : A]{B}[]$ is interpreted by a
+      \textbf{fibration} $\Interp{B} : \Interp{A} \to \GPD$ of groupoids.
+    % In particular, if $p : x \Iso y$ in $\Interp{A}$ then we have an isomorphism of groupoids $\Interp{B}(p) : \Interp{B}(x) \Iso \Interp{B}(y)$.
+    \item A term of type $\IsTy[x : A]{B}[]$ is a \textbf{section} of the fibration $\Interp{B}$.
+    \item The identity type $\IsTy[]{\Id{A}{M}{N}}[]$ is interpreted by the set
+      of isomorphisms of the groupoid $\Interp{A}$, i.e.
     \[
       \Hom[\Interp{A}]{\Interp{M}}{\Interp{N}}
     \]
@@ -477,7 +476,7 @@
 
   \medskip
 
-  In this model there are types with non-trivial identity types.
+  In this model there are types with \textbf{non-trivial identity types}.
 
   \medskip
   
@@ -485,51 +484,156 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Homotopy}
-
-  Let $X$ and $Y$ be spaces. Let $f, g : X \to Y$ be continuous functions.
+  \frametitle{Paths}
+  
+  Let $X$ be a (topological) space.
 
   \begin{definition}
-    A \textbf{homotopy} from $f$ to $g$ is a continuous function
+    A \textbf{path} in space $X$ is a continuous function $p : [0, 1] \to X$.
+
+  \end{definition}
+
+  \medskip
+  
+  Write $p : x \Path y$ if $p(0) = x$ and $p(1) = y$.
+  
+  \medskip
+  
+  Given $p : x \Path y$ let $p^{-1} : y \Path x$ by $p^{-1}(t) \defeq p(1 - t)$.
+
+  \medskip
+
+  Given $p : x \Path y$ and $q : y \Path z$ let
+  \[
+    (p \Concat q)(t) \defeq
+      \begin{cases}
+        p(2t) & \text{ if $0 \leq t \leq 1/2$} \\
+        q(2t - 1) & \text{ if $1/2 \leq t \leq 1$} \\
+      \end{cases}
+  \]
+  
+  \textbf{Question}: given 
+  \begin{align*}
+    p &: x \Path y
+    &
+    q &: y \Path z
+    &
+    r &: z \Path w
+  \end{align*}
+  is the following true?
+  \[
+    (p \Concat q) \Concat r \overset{?}{=} p \Concat (q \Concat r)
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Homotopy}
+
+  Let $f, g : X \to Y$ be continuous functions.
+
+  \begin{definition}
+    A \textbf{homotopy} $H$ from $f$ to $g$ is a continuous function
     \[
       H : X \times [0, 1] \to Y
     \]
     such that $H(-, 0) = f$ and $H(-, 1) = g$.
   \end{definition}
   
-  We write $f \simeq g$ if there is a homotopy from $f$ to $g$.
+  \begin{center}
+    \includegraphics[scale=0.2]{Homotopy.jpg}
+  \end{center}
 
-  This is an equivalence relation!
+  Write $f \simeq g$ if there is a homotopy from $f$ to $g$.
+
+  $\simeq$ is an equivalence relation.
 \end{frame}
 
-\begin{frame}
-  \frametitle{Homotopy equivalence}
+% \begin{frame}
+%   \frametitle{Homotopy (II)}
+%   \begin{theorem}
+%     $\simeq$ is an equivalence relation.
+%   \end{theorem}
+  % \begin{proof}
+  %   \small 
+  %   \textbf{Transitivity}. Let $f, g, h : X \to Y$, with $f \simeq g$ and $g \simeq h$.
+  %   Given $H_1 : X \times [0, 1] \to Y$ from $f$ to $g$ and $H_2 : X \times [0,
+  %   1] \to Y$ from $g$ to $h$, define 
+  %   \[
+  %     H_3(x, t) \defeq \begin{cases}
+  %       H_1(x, t) & \text{ when } 0 \leq t < 1/2 \\
+  %       H_2(x, t) & \text{ when } 1/2 \leq t \leq 1
+  %     \end{cases}
+  %   \]
+  %   Hence $f \simeq h$.
 
-  \begin{definition}
-    The spaces $X$ and $Y$ are \textbf{homotopy-equivalent} if
-    there are continuous functions $f : X \to Y$ and $g : Y \to X$ such that
-    \begin{align*}
-      g \circ f &\simeq 1_X 
-      f \circ g &\simeq 1_Y
-    \end{align*}
-    where $1_X$ and $1_Y$ are the continuous identity functions on $X$ and $Y$
-    respectively.
-  \end{definition}
-\end{frame}
+  %   \textbf{Symmetry}. Let $f \simeq g$. Given $H : X \times [0, 1] \to Y$
+  %   define
+  %   \[
+  %     H'(x, t) \defeq H(x, 1 - t)
+  %   \]
+  %   Hence $g \simeq f$.
+  % \end{proof}
+% \end{frame}
 
 \begin{frame}
-  \frametitle{Homotopy \emph{type} theory}
+  \frametitle{Associativity and Homotopy}
+  \small
+  Given 
+  \begin{align*}
+    p &: x \Path y
+    &
+    q &: y \Path z
+    &
+    r &: z \Path w
+  \end{align*}
+  we have that
+  \[
+    (p \Concat q) \Concat r \simeq p \Concat (q \Concat r) : x \Path w
+  \]
+
+  \begin{center}
+    \includegraphics[scale=0.3]{assoc.jpg}
+  \end{center}
   
-  Awodey/Warren and Voevodsky
+  If $1_x : x \Path x$ and $1_y : y \Path y$ are constant paths then
+  \[
+    p \Concat 1_y \simeq p \simeq 1_x \Concat p
+  \]
 \end{frame}
 
 \begin{frame}
-  \frametitle{Extensionality principles}
+  \frametitle{The Fundamental Groupoid}
+
+  Let $X$ be a space. Its \textbf{fundamental groupoid} $\pi(X)$ consists of
+  \begin{description}
+    \item[objects] the points of $X$
+    \item[isomorphisms] equiv. classes $[p]$ of paths $p : x \Path y$ up to
+      $\simeq$
+  \end{description}
   
+  \medskip
+  
+  Taking only equivalence classes of \textbf{loops} $p : x \Path x$ at $x \in X$
+  gives the \textbf{fundamental group} $\pi(X, x)$ of $X$ at $x$.
+  
+  \medskip
+  
+  These are essential \textbf{algebraic invariants} of the space $X$.
+  
+  \[
+    \mathbb{S}^1 \quad\defeq\quad
+    \begin{tikzpicture}[baseline=(current  bounding  box.center)]
+      \filldraw[color=BristolURed, fill=none, very thick](0,0) circle (1.2);
+      \filldraw (1.2,0) circle (2pt) node[right] {$b$};
+    \end{tikzpicture}
+  \]
+
+  \begin{theorem}
+    $\pi(\mathbb{S}^1, b) \cong \mathbb{Z}$
+  \end{theorem}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Univalence}
   
 \end{frame}
 
@@ -540,6 +644,7 @@
   \nocite{hott_2013}
   \nocite{awodey_2012}
   \nocite{shulman_2017}
+  \nocite{may_1999}
 \end{frame}
 
 
