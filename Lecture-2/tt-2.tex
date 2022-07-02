@@ -329,67 +329,6 @@
 
 \end{frame}
 
-\section{Universes}
-
-\begin{frame}
-  \frametitle{Identity types are not good enough}
-  
-  \begin{theorem}[Jan Smith, J. Symb. Log. 1988]
-    The type correspondong to Peano's fourth axiom, i.e.
-    \[
-      \IsTy[n : \Nat]{\Id{\Nat}{0}{\Succ{n}} \to \mathbf{0}}[]
-    \]
-    is \textbf{not} inhabited in MLTT with $\Pi$, $\Sigma$, and identity types.
-  \end{theorem}
-  Proof: construct a model of MLTT where types are subsingleton sets.
-
-  \medskip
-
-  To prove Peano 4, we intuitively want to
-  \begin{enumerate}
-    \item \Alert{construct a type family} $\IsTy[n : \Nat]{B(n)}[]$ for which
-      $B(\Tm{\Zero})$ is inhabited, while $\IsTy[n : \Nat]{B(\Tm{\Succ{n}})}[]$
-      is always empty.
-    \item assuming $\IsTm[n : \Nat]{p}{\Id{\Nat}{0}{\Succ{n}}}$ and
-      $\IsTm[]{M}{B(\Tm{\Zero})}$, obtain $\IsTm[n :
-      \Nat]{\App{\Transport{p}}{M}}{B(\Tm{\Succ{n}})} \deq \textbf{0}$
-  \end{enumerate}
-  We cannot perform Step 1 because types are not terms.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Universes \`{a} la Russell}
-  We introduce the \textbf{universe}, a \textbf{type of all (small) types}.
-  \begin{mathpar}
-    \inferrule{ }{\IsTy{\Uni}[]}
-    \and
-    \inferrule{
-      \IsTm{A}{\Uni}
-    }{
-      \IsTy{A}[]
-    }
-  \end{mathpar}
-  plus one rule for each type constructor, e.g.
-  \begin{mathpar}
-    \inferrule{
-      \IsTm{A}{\Uni} \\
-      \IsTm[\Gamma, x : \Uni]{B}{\Uni}
-    }{
-      \IsTm{\Fn{x}{A}{B}}{\Uni}
-    }
-  \end{mathpar}
-  \Alert{Caution}. We must \textbf{not} have
-  \[
-    \inferrule{ }{\IsTm{\Uni}{\Uni}}
-  \]
-  because that causes a Russell-style paradox (Girard's paradox).
-  
-  \medskip
-  
-  Types may then be constructed as terms of $\Uni$ (e.g. by induction).
-\end{frame}
-
-
 \section{Homotopy}
 
 \begin{frame}
