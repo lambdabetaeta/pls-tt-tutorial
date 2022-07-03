@@ -52,21 +52,30 @@
 
 \frame{\titlepage}
 
-
 \begin{frame}
-  \frametitle{Homotopy equivalence}
+  \frametitle{Previously}
 
-  \begin{definition}
-    The spaces $X$ and $Y$ are \textbf{homotopy-equivalent} if
-    there are continuous functions $f : X \to Y$ and $g : Y \to X$ such that
-    \begin{align*}
-      g \circ f &\simeq 1_X 
-      &
-      f \circ g &\simeq 1_Y
-    \end{align*}
-    where $1_X$ and $1_Y$ are the continuous identity functions on $X$ and $Y$
-    respectively.
-  \end{definition}
+  Intensional identity types seem to support the following view:
+  \begin{itemize}
+    \item Types are \textbf{spaces} (up to homotopy).
+    \item Terms are \textbf{points}.
+    \item Elements of the identity type are \textbf{paths}.
+    \item Everything given in a \textbf{synthetic} manner, not analytic.
+  \end{itemize}
+  
+  This discovery is independently due to 
+  \begin{itemize}
+    \item Awodey and Warren [Math. Proc. Camb. Philos. Soc. 2009]
+    \item Vladimir Voevodsky (1966--2017) [Stanford lecture 2006]
+  \end{itemize}
+  
+  Interpretation of TT into \textbf{simplicial sets}: Kapulkin and Lumsdaine,
+  with thanks to Voevodsky [J. Eur. Math. Soc. 2018].
+  
+  \medskip
+  
+  But Voevodsky discovered that simplicial sets support a little bit more than
+  MLTT\ldots
 \end{frame}
 
 \section{Universes}
@@ -126,6 +135,102 @@
   \medskip
   
   Types may then be constructed as terms of $\Uni$ (e.g. by induction).
+\end{frame}
+
+\section{Homotopy Equivalences}
+
+\begin{frame}
+  \frametitle{Homotopy equivalence}
+
+  \begin{definition}
+    Two topological spaces $X$ and $Y$ are \textbf{homotopy-equivalent} if there
+    are continuous functions $f : X \to Y$ and $g : Y \to X$ such that
+    \begin{align*}
+      g \circ f &\sim 1_X 
+      &
+      f \circ g &\sim 1_Y
+    \end{align*}
+    where $1_X$ and $1_Y$ are the identity functions on $X$ and $Y$.
+  \end{definition}
+
+  \begin{center}
+    \includegraphics[scale=0.3]{mug.jpg}
+  \end{center}
+  
+  We can model this synthetically in MLTT.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Type-theoretic homotopies}
+
+  Let $A, B : \Uni$, and $f, g : A \to B$. 
+  
+  \medskip
+  
+  Define the type of \textbf{(type-theoretic) homotopies} from $f$ to $g$ to be
+  \[
+    f \sim g \defeq
+      \Fn{x}{A}{
+        \Id{B}{\App{f}{x}}{\App{g}{x}}
+      }
+  \]
+  
+  Given $f : A \to B$ and $g : B \to C$ define 
+  $
+    g \circ f \defeq
+      \Lam{x}{\App{g}{\App{f}{x}}} : A \to C
+  $.
+  
+  \medskip
+  
+  Given $f : A \to B$ define the type of its \textbf{quasi-inverses} to be
+  \[
+    \QInv{f} \defeq
+      \DSum{g}{B \to A}{
+        (g \circ f \sim 1_A) \times (f \circ g \sim 1_B)
+      }
+  \]
+  where $1_A : A \to A$ is given by $1_A \defeq \Lam{x}[A]{x}$.
+
+  \medskip
+  
+  There is a type $\IsEquiv{f}$ with
+  \begin{align*}
+    \QInv{f} &\to \IsEquiv{f}
+    &
+    \IsEquiv{f} &\to \QInv{f}
+  \end{align*}
+  which is significantly better behaved than $\QInv{f}$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Type-theoretic equivalences and univalence}
+  
+  For $A, B : \Uni$ define the type of \textbf{(type-theoretic) equivalences}
+  \[
+    A \simeq B \defeq
+      \DSum{f}{A \to B}{\IsEquiv{f}}
+  \]
+  
+  We can use equivalences to decompose identity types.
+
+  For example, for any $A, B : \Uni$ and $p, q : A \times B$:
+  \begin{align*}
+    \Id{A \times B}{p}{q} &\simeq 
+    \Id{A}{\Proj[1]{p}}{\Proj[1]{q}} \times \Id{B}{\Proj[2]{p}}{\Proj[2]{q}}
+  \end{align*}
+  
+  \textbf{Question}: what is an identity between types?
+  
+  \medskip
+
+  Voevodsky proposed adding the \textbf{univalence axiom}:
+  \[
+    \textsf{ua} : 
+      \Fn{A, B}{\Uni}{
+        (A \simeq B) \simeq \Id{\Uni}{A}{B}
+      }
+  \]
 \end{frame}
 
 \end{document}

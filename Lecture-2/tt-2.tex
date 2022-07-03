@@ -481,19 +481,19 @@
     \includegraphics[scale=0.2]{Homotopy.jpg}
   \end{center}
 
-  Write $f \simeq g$ if there is a homotopy from $f$ to $g$.
+  Write $f \sim g$ if there is a homotopy from $f$ to $g$.
 
-  $\simeq$ is an equivalence relation.
+  $\sim$ is an equivalence relation.
 \end{frame}
 
 % \begin{frame}
 %   \frametitle{Homotopy (II)}
 %   \begin{theorem}
-%     $\simeq$ is an equivalence relation.
+%     $\sim$ is an equivalence relation.
 %   \end{theorem}
   % \begin{proof}
   %   \small 
-  %   \textbf{Transitivity}. Let $f, g, h : X \to Y$, with $f \simeq g$ and $g \simeq h$.
+  %   \textbf{Transitivity}. Let $f, g, h : X \to Y$, with $f \sim g$ and $g \sim h$.
   %   Given $H_1 : X \times [0, 1] \to Y$ from $f$ to $g$ and $H_2 : X \times [0,
   %   1] \to Y$ from $g$ to $h$, define 
   %   \[
@@ -502,14 +502,14 @@
   %       H_2(x, t) & \text{ when } 1/2 \leq t \leq 1
   %     \end{cases}
   %   \]
-  %   Hence $f \simeq h$.
+  %   Hence $f \sim h$.
 
-  %   \textbf{Symmetry}. Let $f \simeq g$. Given $H : X \times [0, 1] \to Y$
+  %   \textbf{Symmetry}. Let $f \sim g$. Given $H : X \times [0, 1] \to Y$
   %   define
   %   \[
   %     H'(x, t) \defeq H(x, 1 - t)
   %   \]
-  %   Hence $g \simeq f$.
+  %   Hence $g \sim f$.
   % \end{proof}
 % \end{frame}
 
@@ -526,7 +526,7 @@
   \end{align*}
   we have that
   \[
-    (p \Concat q) \Concat r \simeq p \Concat (q \Concat r) : x \Path w
+    (p \Concat q) \Concat r \sim p \Concat (q \Concat r) : x \Path w
   \]
 
   \begin{center}
@@ -535,7 +535,7 @@
   
   If $1_x : x \Path x$ and $1_y : y \Path y$ are constant paths then
   $
-    p \Concat 1_y \simeq p \simeq 1_x \Concat p
+    p \Concat 1_y \sim p \sim 1_x \Concat p
   $.
 \end{frame}
 
@@ -546,7 +546,7 @@
   \begin{description}
     \item[objects] the points of $X$
     \item[isomorphisms] equiv. classes $[p]$ of paths $p : x \Path y$ up to
-      $\simeq$
+      $\sim$
   \end{description}
   
   \medskip
@@ -583,7 +583,7 @@
     A \textbf{groupoid} $\mathcal{G}$ consists of
     \begin{itemize}
       \item a set of \textbf{objects} $\Ob{\mathcal{G}}$
-      \item for $x, y \in \Ob{\mathcal{G}}$ a set of \textbf{isomorphisms} $\Hom{x}{y}$
+      \item for $x, y \in \Ob{\mathcal{G}}$ a \Alert{set} of \textbf{isomorphisms} $\Hom{x}{y}$
 
       \vdots
     \end{itemize}
@@ -592,8 +592,8 @@
   \begin{definition}[sort of]
     An \textbf{$\infty$-groupoid} $\mathcal{G}$ consists of
     \begin{itemize}
-      \item a set of \textbf{objects} $\Ob{\mathcal{G}}$
-      \item for $x, y \in \Ob{\mathcal{G}}$ an \textbf{$\infty$-groupoid} $\Hom{x}{y}$
+      \item a set of \textbf{0-cells} $\Ob{\mathcal{G}}$
+      \item for $x, y \in \Ob{\mathcal{G}}$ an \Alert{$\infty$-groupoid} of \textbf{1-cells} $\Hom{x}{y}$
 
       \vdots
     \end{itemize}
@@ -606,9 +606,9 @@
   Let $X$ be a space. Its \textbf{fundamental $\infty$-groupoid} $\pi_\infty(X)$
   consists of
   \begin{description}
-    \item[0-cells] the points of $X$
-    \item[1-cells] paths $p : x \Path y$ between points
-    \item[2-cells] homotopies $H : p \simeq q$ between paths
+    \item[0-cells)] the points of $X$
+    \item[1-cells)] paths $p : x \Path y$ between points
+    \item[2-cells] homotopies $H : p \sim q$ between paths
 
     \vdots
   \end{description}
@@ -644,7 +644,7 @@
   
   For example, given $\IsTy[]{A}[]$ we can write down a term
   \[
-    \Concat : \Fn{x, y, z}{A}{
+    \_ \Concat \_ : \Fn{x, y, z}{A}{
       \Id{A}{x}{y}
       \to
       \Id{A}{y}{z}
@@ -683,8 +683,8 @@
   \end{multline*}
   
   \textbf{Informal proof}. Given $p, q, r$ as above we may assume that $x \deq y
-  \deq z \deq w$ and $p \deq q \deq r \deq \Refl{x}$. Thus, need only a term of
-  type
+  \deq z \deq w$ and $p \deq q \deq r \deq \Refl{x}$. Thus, we only need a term
+  of type
   \[
     \Id{\Id{A}{x}{x}}{
       \underbrace{(p \Concat q) \Concat r}_{
@@ -696,11 +696,11 @@
       }
     }
   \]
-  Take $\Refl{\Refl{x}}$.
+  and for that we may take $\Refl{\Refl{x}}$.
   
   \medskip
   
-  This can be taken to its logical conclusion:
+  This can be taken to its logical conclusion---see HoTT book:
   \begin{center}
     \shadowbox{
       \begin{minipage}{0.80\textwidth}
@@ -718,10 +718,11 @@
   \begin{itemize}
     \item \textbf{Intensional identity types} allow proofs of non-trivial, non-definitional equalities in MLTT.
     \item Iterated identity types are a very mysterious entity.
-    \item They seem to naturally generate the structure of an $\infty$-groupoid.
+    \item They generate the structure of an $\infty$-groupoid.
     \item MLTT can be seen as a synthetic theory of $\infty$-groupoids.
   \end{itemize}
   
+  Tomorrow: homotopy equivalence; $n$-types; higher inductive types.
 \end{frame}
 
 \begin{frame}
