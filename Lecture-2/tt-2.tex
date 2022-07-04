@@ -172,14 +172,12 @@
     \begin{quote}
       \normalfont
       Let $x, y : A$ and $p : \Id{A}{x}{y}$. We want to construct a term of type
-      $B(x) \to B(y)$. By \textbf{induction} we may assume that $x \equiv y$, so
+      $B(x) \to B(y)$. By elimination we may assume that $x \equiv y$, so
       it suffices to give a term $B(x) \to B(x)$. Take the identity function.
     \end{quote}
 
     \item Let $\IsTm[x : A]{f(x)}{B}$. Then $\IsTy[x, y :
-      A]{\Id{B}{f(x)}{f(y)}}[]$. 
-    
-    We have
+      A]{\Id{B}{f(x)}{f(y)}}[]$. We have
       \[
         \IsTm[x, y : A, p : \Id{A}{x}{y}]{
           \Ap{f}{p} \deq \IdRec{p}{x}{\Refl{f(x)}}
@@ -719,8 +717,8 @@
   \frametitle{Summary}
   \begin{itemize}
     \item \textbf{Intensional identity types} allow proofs of non-trivial, non-definitional equalities in MLTT.
-    \item Iterated identity types are a very mysterious entity.
-    \item They generate the structure of an $\infty$-groupoid.
+    \item Iterated identity types generate the structure of an
+      $\infty$-groupoid.
     \item MLTT can be seen as a synthetic theory of $\infty$-groupoids.
   \end{itemize}
   

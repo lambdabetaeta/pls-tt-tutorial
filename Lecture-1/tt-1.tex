@@ -578,10 +578,6 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
 \begin{frame}
   \frametitle{Metatheory (II)}
   
-  \begin{theorem}[Decidability of type checking]
-    Given $\Gamma$, $\Tm{M}$, and $A$, it is decidable whether $\IsTm{M}{A}$.
-  \end{theorem}
-  
   \begin{theorem}[Canonicity]
     Let $\IsTm[]{M}{C}$. Then:
     \begin{itemize}
@@ -597,7 +593,13 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     $\EqTm{M}{N}{A}$.
   \end{theorem}
   
-  \textbf{These results give MLTT its unusual computational flavour.}
+  \begin{theorem}[Decidability of type checking]
+    Given $\Gamma$, and any judgement $\mathcal{J}$, it is decidable whether
+    $\Gamma \vdash \mathcal{J}$.
+  \end{theorem}
+  
+  \medskip
+  \textbf{These properties give MLTT its computational flavour.}
 \end{frame}
 
 
@@ -799,12 +801,12 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
   \begin{itemize}
     \item MLTT is a formal theory of \textbf{constructions} and \textbf{dependence}.
     \item It has very good metatheoretic and computational properties.
-    \item It is inherently `constructive' (for some sense of the word).
+    \item It is inherently ``constructive'' (for some sense of the word).
   \end{itemize}
   
   \medskip
 
-  Tomorrow: equality as a proposition.
+  Tomorrow: equality as a proposition/type.
   
 \end{frame}
 
