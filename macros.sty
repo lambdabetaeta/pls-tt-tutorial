@@ -148,6 +148,7 @@
 }
 %% Natural numbers
 \NewDocumentCommand{\Nat}{}{\mathsf{Nat}}
+\NewDocumentCommand{\Int}{}{\mathsf{Int}}
 \NewDocumentCommand{\Zero}{}{\mathsf{zero}}
 \NewDocumentCommand{\Succ}{m}{\mathsf{succ}(#1)}
 \NewDocumentCommand{\NatRec}{ommmmm}{
@@ -188,6 +189,7 @@
 }
 
 \NewDocumentCommand{\Interp}{m}{\llbracket #1 \rrbracket}
+\NewDocumentCommand{\Sfn}{mm}{\textsf{#1}\parens{\Tm{#2}}}
 
 
 % homotopi

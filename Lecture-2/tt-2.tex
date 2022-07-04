@@ -34,7 +34,7 @@
 
 \newcommand\doubleplus{+\kern-1.3ex+\kern0.8ex}
 
-\title{Type Theory and Homotopy \\ II. Identity and Homotopy}
+\title{Type Theory and Homotopy \\ II. Identity}
 \author{
 		Alex Kavvos % \inst{1} % \orcidID{0000-0001-7953-7975}
 }
@@ -347,7 +347,8 @@
     \IsTy[]{\Id{\Id{A}{M}{N}}{P}{Q}}[]
   \]
 
-  Should the following be inhabited for any type $\IsTy{A}[]$?
+  Should the following \textbf{Uniqueness of Identity Proofs (UIP)} principle be
+  inhabited for any type $\IsTy{A}[]$?
   \[
     \IsTy[]{
       \Fn{x, y}{A}{
@@ -356,6 +357,7 @@
         }
       }
     }[]
+    \tag{UIP}
   \]
   It's certainly true in the set-theoretic model!
   \begin{theorem}[Hofmann-Streicher, 1998]
@@ -722,7 +724,7 @@
     \item MLTT can be seen as a synthetic theory of $\infty$-groupoids.
   \end{itemize}
   
-  Tomorrow: homotopy equivalence; $n$-types; higher inductive types.
+  Tomorrow: homotopy levels; equivalence; higher inductive types.
 \end{frame}
 
 \begin{frame}
