@@ -1,4 +1,4 @@
-\documentclass[handout]{beamer} % use [handout] option to stop pauses
+\documentclass{beamer} % use [handout] option to stop pauses
 \beamertemplatenavigationsymbolsempty 
 
 \usepackage[utf8]{inputenc}
@@ -187,7 +187,7 @@
       \begin{quote}
         \normalfont
         Let $x, y : A$ and $p : \Id{A}{x}{y}$. We want to show
-        $\Id{B}{f(x)}{f(y)}$. By \textbf{induction} we may assume that $x \equiv
+        $\Id{B}{f(x)}{f(y)}$. By elimination we may assume that $x \equiv
         y$, so it suffices to construct a term of type $\Id{B}{f(x)}{f(x)}$.
         Take $\Tm{\Refl{f(x)}}$.
       \end{quote}
@@ -630,7 +630,7 @@
 \begin{frame}
   \frametitle{Identity Types and Homotopy}
 
-  The intended allegory:
+  The intended pun:
   \begin{center}
     \shadowbox{
       \begin{minipage}{0.80\textwidth}
@@ -666,7 +666,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Associativity of composition}
+  \frametitle{Associativity of path composition}
   
   \small
   
@@ -699,11 +699,12 @@
   and for that we may take $\Refl{\Refl{x}}$.
   
   \medskip
+  \pause
   
   This can be taken to its logical conclusion---see HoTT book:
   \begin{center}
     \shadowbox{
-      \begin{minipage}{0.80\textwidth}
+      \begin{minipage}{0.60\textwidth}
         \centering
           The elimination rule of the identity type \\
           generates the structure of an $\infty$-groupoid.
@@ -719,6 +720,7 @@
     \item \textbf{Intensional identity types} allow proofs of non-trivial, non-definitional equalities in MLTT.
     \item Iterated identity types generate the structure of an
       $\infty$-groupoid.
+    \item That is why sometimes the elimination rule for the identity type is known as \textbf{path induction}.
     \item MLTT can be seen as a synthetic theory of $\infty$-groupoids.
   \end{itemize}
   

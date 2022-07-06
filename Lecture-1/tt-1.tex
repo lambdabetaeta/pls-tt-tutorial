@@ -1,4 +1,4 @@
-\documentclass[handout]{beamer} % use [handout] option to stop pauses
+\documentclass{beamer} % use [handout] option to stop pauses
 \beamertemplatenavigationsymbolsempty 
 
 \usepackage[utf8]{inputenc}
@@ -59,8 +59,7 @@
   \begin{itemize}
     \item Many different philosophies: Brouwerian intuitionism, Heyting
       arithmetic, Russian constructivism, Bishop-style mathematics, etc. (see
-      Stanford Encyclopedia of Philosophy entries ``Intuitionism in the
-      Philosophy of Mathematics'' and ``Constructive Mathematics'').    
+      Stanford Encyclopedia of Philosophy entries)
 
     \item One common feature:
       \begin{center}
@@ -73,7 +72,7 @@
         }
       \end{center}
       
-    \item In particular, the details of the construction matters.
+    \item In particular, the details of the construction matter.
       
     \item Modern algebra: the structure of an isomorphism matters.
 
@@ -82,6 +81,8 @@
       
     \item Less focus on \textbf{truth}, more focus on \textbf{proof}.
 
+    \item The \textbf{law of the excluded middle} (LEM) $\phi \lor \lnot \phi$
+      is rejected.
   \end{itemize}
 
   
@@ -166,9 +167,9 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
 
     \begin{center}
       \shadowbox{
-        \begin{minipage}{0.60\textwidth}
+        \begin{minipage}{0.30\textwidth}
           \centering
-          types = propositions (or predicates) \\ 
+          types = predicates \\ 
           terms = proofs
         \end{minipage}
       }
@@ -187,7 +188,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     \begin{tabular}{ll}
       $\IsCtx{\Gamma}$    & $\Gamma$ is a context \\
       $\IsTy{A}[]$        & $A$ is a type in context $\Gamma$ \\
-      $\IsTm{M}{A}$       & $M$ is a term of type $A$ in context $\Gamma$ \\
+      $\IsTm{M}{A}$       & $M$ is a \alert{term} of type $A$ in context $\Gamma$ \\
       & \\
       $\EqCtx{\Gamma}{\Delta}$  & $\Gamma$ and $\Delta$ are \textbf{definitionally} equal contexts \\
       $\EqTy{A}{B}[]$             & $A$ and $B$ are \textbf{definitionally} equal types \\
@@ -593,7 +594,7 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     $\EqTm{M}{N}{A}$.
   \end{theorem}
   
-  \begin{theorem}[Decidability of type checking]
+  \begin{theorem}[Decidability]
     Given $\Gamma$, and any judgement $\mathcal{J}$, it is decidable whether
     $\Gamma \vdash \mathcal{J}$.
   \end{theorem}

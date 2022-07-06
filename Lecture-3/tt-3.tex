@@ -89,9 +89,9 @@
   
   \medskip
   
-  On the other hand, some types do not. Let $A$ be a type.
+  Yet, some types do not. Let $A$ be a type.
   \begin{align*}
-    \textbf{contractible} && \Sfn{isContr}{A} &\defeq
+    \alert{contractible} && \Sfn{isContr}{A} &\defeq
       \DSum{c}{A}{
         \parens{
           \Fn{x}{A}{
@@ -117,7 +117,7 @@
   In general, we define
   \begin{align*}
     \Sfn{is-(-2)-type}{A} &\defeq \Sfn{isContr}{A} \\
-    \Sfn{is-(n+1)-type}{A} &\defeq \Fn{x, y}{A}{\Sfn{isContr}(\Id{A}{x}{y})}
+    \Sfn{is-(n+1)-type}{A} &\defeq \Fn{x, y}{A}{\Sfn{isContr}{\Id{A}{x}{y}}}
   \end{align*}
   Then 
   \begin{align*}
@@ -293,13 +293,14 @@
   \begin{center}
     \shadowbox{isomorphic/equivalent types are identical}
   \end{center}
-  This principle is often informally used (or called `abuse of notation').
+  This principle is often used informally in maths (`abuse of notation').
 
-  E.g. the Cauchy and the Dedekind reals are ``the same.''
+  E.g. the Cauchy reals and the Dedekind reals are ``the same.''
   
   \medskip
 
   Its soundness is validated by the simplicial model of type theory.
+  (The identity type elimination rule remains valid!)
 \end{frame}
 
 % \begin{frame}
