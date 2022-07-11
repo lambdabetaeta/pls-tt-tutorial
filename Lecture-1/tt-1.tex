@@ -99,7 +99,7 @@ Let $A, B, \dots$ be sets.
   A \to B &\defeq \{ f \mid f : A \to B \}
 \end{align*}
 \[
-  A + B \defeq \{ (1, a) \mid a \in A \} \cup \{ (2, y) \mid b \in B \}
+  A + B \defeq \{ (1, a) \mid a \in A \} \cup \{ (2, b) \mid b \in B \}
 \]
 Let $\lnot A \defeq A \to \mathbf{0}$.
 
@@ -110,8 +110,8 @@ Let $\lnot A \defeq A \to \mathbf{0}$.
     \item $x \mapsto (y \mapsto (x, y)) \in A \to (B \to A \times B)$
     \item $\lambda x.\, \lambda y.\, (x, y) \in A \to (B \to A \times B)$
     \item $\lambda (x, v). \begin{cases}
-        (1, (x, a)) & \text{ if } v = (1, a) \\
-        (2, (x, b)) & \text{ if } v = (2, b) \\
+        (1, (x, b)) & \text{ if } v = (1, b) \\
+        (2, (x, c)) & \text{ if } v = (2, c) \\
     \end{cases}
     \in A \times (B + C) \to (A \times B) + (A \times C)$
     \item $\lambda a.\, \lambda f.\, f(a) \in A \to \lnot\lnot A$

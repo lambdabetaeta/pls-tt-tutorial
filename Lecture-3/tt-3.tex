@@ -196,7 +196,7 @@
   \begin{mathpar}
     \inferrule{
       \IsTm{A}{\Uni} \\
-      \IsTm[\Gamma, x : \Uni]{B}{\Uni}
+      \IsTm[\Gamma, x : A]{B}{\Uni}
     }{
       \IsTm{\Fn{x}{A}{B}}{\Uni}
     }
